@@ -5,7 +5,7 @@ import Card from "../app/card";
 
 export default function Home() {
   return (
-    <main className="text-white">
+    <main className="text-white pb-12">
       <Card />
     </main>
   );
