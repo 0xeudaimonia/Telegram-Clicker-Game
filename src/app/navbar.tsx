@@ -1,30 +1,30 @@
-import React from 'react';
-
+import React from "react";
+import Link from "next/link";
 export default function Navbar() {
   return (
-    <div className="navbar">
-      <div className="flex-none">
-        <button className="btn btn-square btn-ghost">
+    <div className="navbar flex justify-between items-center bg-white">
+      <div className="">
+        <button className="btn btn-sm btn-circle btn-ghost">
+          {/* back arrow SVG icon */}
           <svg
+            height="auto"
+            id="Layer_1"
+            version="1.1"
+            viewBox="0 0 512 512"
+            width="512px"
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            className="inline-block h-5 w-5 stroke-current"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
+            <polygon points="352,128.4 319.7,96 160,256 160,256 160,256 319.7,416 352,383.6 224.7,256 " />
           </svg>
         </button>
       </div>
-      <div className="flex-1">
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+      <div className="">
+        <Link href={"/"} className="text-xl">
+          Mining
+        </Link>
       </div>
-      <div className="flex-none">
-        <button className="btn btn-square btn-ghost">
+      <div className="">
+        <button className="btn btn-sm btn-square btn-ghost border rounded-full border-black">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

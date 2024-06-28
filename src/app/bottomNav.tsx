@@ -1,56 +1,45 @@
+"use client";
 import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+const text = ["build", "score list", "referal", "tenders", "nft page"];
 
 export default function BottomNav() {
+  const pathname = usePathname();
   return (
-    <div className="btm-nav">
-      <button>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-          />
-        </svg>
-      </button>
-      <button disabled>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-      </button>
-      <button>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-          />
-        </svg>
-      </button>
+    <div className="p-3 fixed bottom-0 w-full">
+      <div className="w-full text-white flex bg-black justify-between p-2 rounded-lg">
+        {text.map((item, index) => {
+          const itemPath =
+            item === "build"
+              ? "/"
+              : `/${item.toLowerCase().replace(/\s/g, "_")}`;
+
+          return (
+            <div
+              role="tablist"
+              key={item}
+              className={`tabs py-2 tabs-boxed rounded-lg ${
+                itemPath === pathname ? "bg-[#1C1C24]" : "bg-black opacity-40"
+              }`}
+            >
+              <Link
+                href={itemPath}
+                className="flex flex-col items-center w-[74px]"
+              >
+                <Image
+                  src={`/menuBatoon_icon${index}.svg`}
+                  alt={`menuBatoon_icon${index}`}
+                  width={25}
+                  height={25}
+                />
+                <span className="text-[10px]">{item}</span>
+              </Link>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
