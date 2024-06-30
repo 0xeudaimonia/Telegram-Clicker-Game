@@ -1,9 +1,9 @@
+"use client";
+
 import React, { useState } from "react";
 import Image from "next/image";
 import Carousel from "../../components/Carousel";
 import Cardlist from "../../components/CardList";
-import { describe } from "node:test";
-
 const tabs = ["Соло", "Альянс"];
 
 const carouselData = [
@@ -79,28 +79,9 @@ const cardListData = [
 
 export default function Card() {
   const [activeTab, setActiveTab] = useState(tabs[0]);
-  const [floorsBuilt, setFloorsBuilt] = useState(513);
-  const [floorsToUpdate, setFloorsToUpdate] = useState(513);
-  const [rentInHour, setRentInHour] = useState(513);
 
-  const handleReset = () => {
-    setFloorsBuilt(0);
-    setFloorsToUpdate(0);
-    setRentInHour(0);
-  };
-
-  const handleTabClick = (tab: React.SetStateAction<string>) => {
+  const handleTabClick = (tab: string) => {
     setActiveTab(tab);
-    // Update data based on the selected tab
-    if (tab === "Соло") {
-      setFloorsBuilt(513);
-      setFloorsToUpdate(513);
-      setRentInHour(513);
-    } else if (tab === "Альянс") {
-      setFloorsBuilt(1000); // Example values
-      setFloorsToUpdate(1000);
-      setRentInHour(1000);
-    }
   };
 
   return (

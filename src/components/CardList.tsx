@@ -33,7 +33,7 @@ const CardList: React.FC<CardListProps> = ({ data }) => {
             />
             <div>
               <h3 className="text-base">{item.title}</h3>
-              <div className="flex gap-2">
+              <div className="flex gap-x-1">
                 <Image src={"/coin.svg"} alt={"coin"} width={12} height={12} />
                 <p className="text-[10px] m-0">{item.points}</p>
               </div>
