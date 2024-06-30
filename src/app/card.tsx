@@ -1,37 +1,28 @@
 import React from "react";
 import Image from "next/image";
-import { useState } from "react";
 
 export default function Card() {
-  const [floorsBuilt, setFloorsBuilt] = useState(513);
-  const [floorsToUpdate, setFloorsToUpdate] = useState(513);
-  const [rentInHour, setRentInHour] = useState(513);
-  const handleReset = () => {
-    setFloorsBuilt(0);
-    setFloorsToUpdate(0);
-    setRentInHour(0);
-  };
   return (
-    <div className="card border-t-2 p-4" id="border-card">
+    <>
       <div className="flex justify-center items-center gap-3 text-center">
         <div className="card mb-4 bg-[#1F1F1F] p-2 px-6">
           <h6 className="text-xs text-[#2496FF]">Floors built</h6>
           <div className="flex gap-2 pt-2 justify-center items-center">
             <Image src="/coin.svg" alt="avatar" width={24} height={24} />
-            <p className="text-lg m-0">+{rentInHour}</p>
+            <p className="text-lg m-0">+513</p>
           </div>
         </div>
         <div className="card mb-4 bg-[#1F1F1F] p-2">
           <h6 className="text-xs text-[#FABB1E]">Floors to update</h6>
           <div className="flex gap-2 pt-2 justify-center items-center">
-            <p className="text-lg m-0">+{rentInHour}</p>
+            <p className="text-lg m-0">+513</p>
           </div>
         </div>
         <div className="card mb-4 bg-[#1F1F1F] p-2 px-6">
           <h6 className="text-xs text-[#0FD73B]">Rent in hour</h6>
           <div className="flex gap-2 pt-2 justify-center items-center">
             <Image src="/coin.svg" alt="avatar" width={24} height={24} />
-            <p className="text-lg m-0">+{rentInHour}</p>
+            <p className="text-lg m-0">+513</p>
             <Image src="/i_icon.svg" alt="avatar" width={24} height={24} />
           </div>
         </div>
@@ -46,7 +37,7 @@ export default function Card() {
           alt="mask_group"
           width={350}
           height={300}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
       </div>
       <div className="my-5 flex justify-between items-center">
@@ -60,6 +51,6 @@ export default function Card() {
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 }

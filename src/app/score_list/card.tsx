@@ -12,7 +12,7 @@ export default function Card() {
     setRentInHour(0);
   };
   return (
-    <div className="card border-t-2 p-4" id="border-card">
+    <div>
       <div className="flex justify-center items-center gap-2 mb-9">
         <p className="m-0">
           <b>Ассоциации застройщиков</b>
@@ -33,7 +33,7 @@ export default function Card() {
           <h3 className=" fw-bolder">513/513</h3>
         </div>
         <div>
-          <button className="btn btn-primary">
+          <button className="btn bg-[url(/bgButton.png)] bg-cover bg-center bg-no-repeat btn-primary">
             <b>Сбросить блок</b>
           </button>
         </div>

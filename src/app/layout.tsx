@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Navbar />
-        <div className="container mx-auto p-4 text-white bg-black">
+        <div className="p-4 text-white bg-black">
           <div className="flex justify-start items-center mb-4">
             <Image
               src="/avatar.jpeg"
@@ -33,7 +33,9 @@ export default function RootLayout({
             <h2 className="text-lg font-bold ms-4">Gleb Vashkevich (Пpopaб)</h2>
           </div>
         </div>
-        {children}
+        <div className="card border-t-2 p-4 pb-8" id="border-card">
+          {children}
+        </div>
         <BottomNav />
       </body>
     </html>
