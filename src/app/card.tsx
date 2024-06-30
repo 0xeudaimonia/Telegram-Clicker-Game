@@ -49,13 +49,13 @@ export default function Card() {
           className="w-full h-full object-cover"
         />
       </div>
-      <div className="my-9 flex justify-between items-center">
+      <div className="my-5 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <Image src="/icon02.svg" alt="icon" width={45} height={45} />
           <h3 className=" fw-bolder">513/513</h3>
         </div>
         <div>
-          <button className="btn btn-primary">
+          <button className="btn bg-[url(/bgButton.png)] bg-cover bg-center bg-no-repeat btn-primary">
             <b>Сбросить блок</b>
           </button>
         </div>

@@ -12,22 +12,19 @@ export default function Card() {
     setRentInHour(0);
   };
   return (
-    <div className="card border-t-2 p-4 " id="border-card">
+    <div className="card border-t-2 p-4" id="border-card">
       <div className="flex justify-center items-center gap-2 mb-9">
         <p className="m-0">
           <b>Ассоциации застройщиков</b>
         </p>
         <Image src="/refresh.svg" alt="refresh" width={16} height={16} />
       </div>
-      <div role="tablist" className="tabs tabs-boxed">
-        <a role="tab" className="tab">
-          Tab 1
+      <div role="tablist" className="tabs tabs-boxed" id="tab">
+        <a role="tab" className="tab tab-active text-white">
+          <b className="text-white">Соло</b>
         </a>
-        <a role="tab" className="tab tab-active">
-          Tab 2
-        </a>
-        <a role="tab" className="tab">
-          Tab 3
+        <a role="tab" className="tab text-white">
+          <b className="text-white">Альянс</b>
         </a>
       </div>
       <div className="my-9 flex justify-between items-center">

@@ -15,17 +15,14 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
+  background: url("/background2.svg") center/cover no-repeat,
+    url("/background.png") center/cover no-repeat,
+    linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))),
     rgb(var(--background-start-rgb));
-  min-height: 100vh;
-
-  background-image: url("/background.png");
+  height: 100vh;
 }
 
 @layer utilities {
@@ -33,9 +30,11 @@ body {
     text-wrap: balance;
   }
 }
+
 .navbar {
   border-radius: 20px 20px 0 0;
 }
+
 h1 {
   font-weight: 700;
   font-size: 2.25rem;
@@ -78,8 +77,19 @@ p {
   line-height: 1.5rem;
   margin-bottom: 1rem;
 }
+
 #border-card {
   border-radius: 20px;
   border-top: 2px solid rgba(36, 150, 255, 1);
   box-shadow: 0px -25px 40px 0px rgba(0, 64, 161, 1);
+  height: 67vh;
+  overflow: scroll;
+}
+
+#tab {
+  background-color: #1f1f1f;
+}
+
+#tab .tab-active {
+  background-color: #0e0e14;
 }
