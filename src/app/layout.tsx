@@ -33,7 +33,7 @@ export default function RootLayout({
             <h2 className="text-lg font-bold ms-4">Gleb Vashkevich (Пpopaб)</h2>
           </div>
         </div>
-        <div className="card border-t-2 p-4 pb-8" id="border-card">
+        <div className="card border-t-2 p-4 pb-16" id="border-card">
           {children}
         </div>
         <BottomNav />

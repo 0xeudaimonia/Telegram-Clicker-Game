@@ -1,18 +1,110 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
-import { useState } from "react";
+import Carousel from "../../components/Carousel";
+import Cardlist from "../../components/CardList";
+import { describe } from "node:test";
+
+const tabs = ["Соло", "Альянс"];
+
+const carouselData = [
+  {
+    title: "Подсобник • 1lvl",
+    description: "50% лучших застройщиков",
+    imageSrc: "/lvlIcons_1.svg",
+  },
+  {
+    title: "Подсобник • 2lvl",
+    description: "50% лучших застройщиков",
+    imageSrc: "/lvlIcons_2.svg",
+  },
+  {
+    title: "Подсобник • 3lvl",
+    description: "50% лучших застройщиков",
+    imageSrc: "/lvlIcons_3.svg",
+  },
+  {
+    title: "Подсобник • 4lvl",
+    description: "50% лучших застройщиков",
+    imageSrc: "/lvlIcons_4.svg",
+  },
+  {
+    title: "Подсобник • 5lvl",
+    description: "50% лучших застройщиков",
+    imageSrc: "/lvlIcons_5.svg",
+  },
+  {
+    title: "Подсобник • 6lvl",
+    description: "50% лучших застройщиков",
+    imageSrc: "/lvlIcons_6.svg",
+  },
+  {
+    title: "Подсобник • 7lvl",
+    description: "50% лучших застройщиков",
+    imageSrc: "/lvlIcons_7.svg",
+  },
+  {
+    title: "Подсобник • 8lvl",
+    description: "50% лучших застройщиков",
+    imageSrc: "/lvlIcons_8.svg",
+  },
+  {
+    title: "Подсобник • 9lvl",
+    description: "50% лучших застройщиков",
+    imageSrc: "/lvlIcons_9.svg",
+  },
+];
+
+const cardListData = [
+  {
+    title: "Gleb Vashkevich",
+    points: "564 216",
+    imageSrc: "/avatar.jpeg",
+  },
+  {
+    title: "Gleb Vashkevich",
+    points: "564 216",
+    imageSrc: "/avatar.jpeg",
+  },
+  {
+    title: "Gleb Vashkevich",
+    points: "564 216",
+    imageSrc: "/avatar.jpeg",
+  },
+  {
+    title: "Gleb Vashkevich",
+    points: "564 216",
+    imageSrc: "/avatar.jpeg",
+  },
+];
 
 export default function Card() {
+  const [activeTab, setActiveTab] = useState(tabs[0]);
   const [floorsBuilt, setFloorsBuilt] = useState(513);
   const [floorsToUpdate, setFloorsToUpdate] = useState(513);
   const [rentInHour, setRentInHour] = useState(513);
+
   const handleReset = () => {
     setFloorsBuilt(0);
     setFloorsToUpdate(0);
     setRentInHour(0);
   };
+
+  const handleTabClick = (tab: React.SetStateAction<string>) => {
+    setActiveTab(tab);
+    // Update data based on the selected tab
+    if (tab === "Соло") {
+      setFloorsBuilt(513);
+      setFloorsToUpdate(513);
+      setRentInHour(513);
+    } else if (tab === "Альянс") {
+      setFloorsBuilt(1000); // Example values
+      setFloorsToUpdate(1000);
+      setRentInHour(1000);
+    }
+  };
+
   return (
-    <div>
+    <div className="mb-10">
       <div className="flex justify-center items-center gap-2 mb-9">
         <p className="m-0">
           <b>Ассоциации застройщиков</b>
@@ -20,24 +112,23 @@ export default function Card() {
         <Image src="/refresh.svg" alt="refresh" width={16} height={16} />
       </div>
       <div role="tablist" className="tabs tabs-boxed" id="tab">
-        <a role="tab" className="tab tab-active text-white">
-          <b className="text-white">Соло</b>
-        </a>
-        <a role="tab" className="tab text-white">
-          <b className="text-white">Альянс</b>
-        </a>
+        {tabs.map((tab) => (
+          <a
+            key={tab}
+            role="tab"
+            className={`tab text-white ${
+              activeTab === tab ? "tab-active" : ""
+            }`}
+            onClick={() => handleTabClick(tab)}
+          >
+            <b className="text-white">{tab}</b>
+          </a>
+        ))}
       </div>
-      <div className="my-9 flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <Image src="/icon02.svg" alt="icon" width={45} height={45} />
-          <h3 className=" fw-bolder">513/513</h3>
-        </div>
-        <div>
-          <button className="btn bg-[url(/bgButton.png)] bg-cover bg-center bg-no-repeat btn-primary">
-            <b>Сбросить блок</b>
-          </button>
-        </div>
-      </div>
+
+      <Carousel data={carouselData} />
+
+      <Cardlist data={cardListData} />
     </div>
   );
 }

@@ -1,14 +1,16 @@
 "use client";
-import React from "react";
+
+import React, { forwardRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
 const text = ["build", "score list", "referal", "tenders", "nft page"];
 
-export default function BottomNav() {
+const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
   const pathname = usePathname();
   return (
-    <div className="fixed bottom-0 w-full">
+    <div ref={ref} className="fixed bottom-0 w-full">
       <div className="w-full text-white flex bg-black justify-between p-2 rounded-lg">
         {text.map((item, index) => {
           const itemPath =
@@ -24,7 +26,7 @@ export default function BottomNav() {
                 itemPath === pathname ? "bg-[#1C1C24]" : "bg-black opacity-40"
               }`}
             >
-              <Link href={itemPath} className={`flex flex-col items-center`}>
+              <Link href={itemPath} className="flex flex-col items-center">
                 <Image
                   src={`/menuBatoon_icon${index}.svg`}
                   alt={`menuBatoon_icon${index}`}
@@ -39,4 +41,8 @@ export default function BottomNav() {
       </div>
     </div>
   );
-}
+});
+
+BottomNav.displayName = "BottomNav";
+
+export default BottomNav;

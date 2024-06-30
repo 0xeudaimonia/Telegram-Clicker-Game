@@ -1,11 +1,17 @@
+"use client";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 export default function Navbar() {
+  const router = useRouter();
   return (
-    <div className="navbar flex justify-between items-center bg-white">
+    <div className="navbar flex justify-between items-center bg-white text-black">
       <div className="">
-        <button className="btn btn-sm btn-circle btn-ghost">
-          {/* back arrow SVG icon */}
+        <button
+          className="btn btn-sm btn-circle btn-ghost"
+          onClick={() => router.back()}
+        >
           <svg
             height="auto"
             id="Layer_1"
