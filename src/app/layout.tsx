@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import BottomNav from "./bottomNav";
+import Navbar from "./navbar";
+import Image from "next/image";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Roboto_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +20,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <Navbar />
+        <div className="p-4 text-white bg-black">
+          <div className="flex justify-start items-center mb-4">
+            <Image
+              src="/avatar.jpeg"
+              alt="avatar"
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
+            <h2 className="text-lg font-bold ms-4">Gleb Vashkevich (Пpopaб)</h2>
+          </div>
+        </div>
+        <div className="card border-t-2 p-4 pb-16" id="border-card">
+          {children}
+        </div>
         <BottomNav />
       </body>
     </html>
