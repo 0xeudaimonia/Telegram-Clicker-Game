@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 
 interface CardListProps {
@@ -17,19 +18,11 @@ const CardList: React.FC<CardListProps> = ({ data }) => {
           className="card bg-[#0040A1] bg-[url(/cardList.png)] bg-no-repeat bg-cover p-3 rounded-lg"
         >
           <div className="flex gap-3 items-center">
-            {index < 3 ? (
-              <p className="text-base m-0 w-4">
-                {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
-              </p>
-            ) : (
-              <p className="text-base m-0 w-4 text-center">{index + 1}</p>
-            )}
             <Image
               src={item.imageSrc}
               alt={item.title}
-              width={28}
-              height={28}
-              className="rounded-full"
+              width={50}
+              height={50}
             />
             <div>
               <h3 className="text-base">{item.title}</h3>
