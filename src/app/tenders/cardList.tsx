@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface CardListProps {
   data: {
@@ -34,14 +35,18 @@ export const CardList: React.FC<CardListProps> = ({ data }) => {
                 </p>
               </div>
             </div>
-            <div>
-              <Image
-                src="/right-arrow.svg"
-                alt="right-arrow"
-                width={25}
-                height={32}
-              />
-            </div>
+            <Link
+              href={`tenders/${item.title.replace(" ", "-").toLowerCase()}`}
+            >
+              <div>
+                <Image
+                  src="/right-arrow.svg"
+                  alt="right-arrow"
+                  width={25}
+                  height={32}
+                />
+              </div>
+            </Link>
           </div>
         </div>
       ))}

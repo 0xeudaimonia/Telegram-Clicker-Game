@@ -93,3 +93,16 @@ p {
 #tab .tab-active {
   background-color: #0e0e14;
 }
+
+.tender_cards {
+  border-width: 2px 1px 0px 1px;
+  border-style: solid;
+  border-color: #fabb1e;
+  box-shadow: 0px 8px 16px 0px #629ffb80;
+  border-radius: 20px;
+  border-radius: 20px;
+}
+
+.tender_cards img {
+  box-shadow: 0px 0px 20px 0px #fabb1e;
+}

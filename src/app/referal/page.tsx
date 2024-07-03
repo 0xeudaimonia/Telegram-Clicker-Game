@@ -1,6 +1,6 @@
 import CardList from "./cardList";
 import TabelList from "./tabelList";
-import CopyToClipboard from "./copyToClipboard";
+import CopyToClipboard from "@/components/copyToClipboard";
 
 const cardListData = [
   {
