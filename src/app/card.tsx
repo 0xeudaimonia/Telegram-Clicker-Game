@@ -1,7 +1,9 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
 import Button from "../components/Button";
 import CardComponent from "../components/Card";
+import Games from "@components/GameCanvas";
 
 export default function Card() {
   const cardData = [
@@ -43,14 +45,9 @@ export default function Card() {
         <h2 className="">513 000</h2>
       </div>
       <div>
-        <Image
-          src="/mask_group.png"
-          alt="mask_group"
-          width={350}
-          height={300}
-          className="w-full h-full object-contain"
-        />
+        <Games />
       </div>
+
       <div className="my-5 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <Image src="/icon02.svg" alt="icon" width={44} height={44} />

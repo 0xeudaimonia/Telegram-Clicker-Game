@@ -14,7 +14,7 @@ const CardList: React.FC<CardListProps> = ({ data }) => {
       {data.map((item, index) => (
         <div
           key={index}
-          className="card bg-[#0040A1] bg-[url(/scoreList.png)] bg-no-repeat bg-cover p-3 rounded-lg"
+          className="card bg-[#0040A1] bg-[url(/cardList.png)] bg-no-repeat bg-cover p-3 rounded-lg"
         >
           <div className="flex gap-3 items-center">
             {index < 3 ? (
