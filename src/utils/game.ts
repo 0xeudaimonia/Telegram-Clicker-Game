@@ -1,8 +1,5 @@
-import { useEffect, useRef } from 'react';
-
-// Define game constants
-const grav = 0.5;
-const rope_length = 120;
+const grav = 0.6;
+const rope_length = 100;
 let force = -0.001;
 
 class Block {
@@ -56,6 +53,7 @@ class Block {
     if (this.state === 'dropped') {
       this.speed += grav;
       this.y += this.speed;
+      this.xlast = this.x;
     }
   }
 
@@ -114,6 +112,17 @@ class Block {
     this.speed = 0;
     this.state = 'ready';
     force *= 1.02;
+  }
+
+  reset() {
+    this.x = 370;
+    this.y = 150;
+    this.speed = 0;
+    this.angle = 45;
+    this.state = 'ready';
+    this.acceleration = 0;
+    this.xlast = 0;
+    force = -0.001;
   }
 }
 
@@ -206,24 +215,30 @@ class Tower {
 
   scroll() {
     if (this.y <= 440) {
+      alert('scrolling');
       this.y += 5;
       this.scrolling = true;
     } else {
       this.height = 160;
-      this.scrolling = false;
+      this.scrolling = true;
       this.onscreen = 3;
     }
   }
 
   reset() {
-    this.onscreen = 3;
-    this.y = 440;
+    this.size = 0;
+    this.onscreen = 0;
+    this.y = 600;
+    this.height = 0;
+    this.xlist = [];
+    this.change = 0;
+    this.speed = 0.4;
+    this.wobbling = false;
+    this.scrolling = false;
+    this.golden = false;
+    this.displayStatus = true;
   }
 }
-
-const initGame = (context: CanvasRenderingContext2D, gameState: any, setGameState: any) => {
-  // Initialize game state
-};
 
 const gameLoop = (context: CanvasRenderingContext2D, gameState: any, setGameState: any) => {
   const { block, tower } = gameState;
@@ -250,7 +265,9 @@ const gameLoop = (context: CanvasRenderingContext2D, gameState: any, setGameStat
     }
 
     if (block.state === 'miss') {
-      // Handle miss state
+      tower.reset();
+      block.reset();
+      return;
     }
 
     block.display(context, origin);
@@ -262,4 +279,4 @@ const gameLoop = (context: CanvasRenderingContext2D, gameState: any, setGameStat
   loop();
 };
 
-export { Block, Tower, initGame, gameLoop };
+export { Block, Tower, gameLoop };
