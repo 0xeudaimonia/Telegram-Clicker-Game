@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import Button from "../components/Button";
-import CardComponent from "../components/Card";
+import Button from "@components/Button";
+import CardComponent from "@components/Card";
 import Games from "@components/GameCanvas";
 
 export default function Card() {
