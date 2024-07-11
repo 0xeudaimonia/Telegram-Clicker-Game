@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 // Define the types for the game objects
 interface Block {
@@ -46,7 +46,7 @@ const useBlock = (): Block => {
     setImage(img);
   }, []);
 
-  const swing = () => {
+  const swing = useCallback(() => {
     const rope_length = 100;
     let newAngle = angle + speed;
 
@@ -62,78 +62,86 @@ const useBlock = (): Block => {
     setAngle(newAngle);
     setAcceleration(Math.sin(newAngle) * force);
     setSpeed(speed + 1.5 * acceleration);
-  };
+  }, [angle, speed]);
 
-  const drop = (tower: Tower) => {
-    if (state === "ready") {
-      setState("dropped");
-      setXlast(x);
-    }
+  const drop = useCallback(
+    (tower: Tower) => {
+      if (state === "ready") {
+        setState("dropped");
+        setXlast(x);
+      }
 
-    if (collided(tower)) {
-      setState("landed");
-    }
+      if (collided(tower)) {
+        setState("landed");
+      }
 
-    if (tower.size === 0 && y >= 536) {
-      setState("landed");
-    }
+      if (tower.size === 0 && y >= 536) {
+        setState("landed");
+      }
 
-    if (tower.size >= 1 && y >= 536) {
-      setState("miss");
-    }
+      if (tower.size >= 1 && y >= 536) {
+        setState("miss");
+      }
 
-    if (state === "dropped") {
-      setSpeed(speed + grav);
-      setY(y + speed);
-      setXlast(x);
-    }
-  };
+      if (state === "dropped") {
+        setSpeed(speed + grav);
+        setY(y + speed);
+        setXlast(x);
+      }
+    },
+    [state, x, y, speed, grav]
+  );
 
-  const collided = (tower: Tower): boolean => {
-    if (tower.size === 0) return false;
-    const lastBlockX = tower.xlist[tower.xlist.length - 1];
-    const withinXRange = xlast < lastBlockX + 60 && xlast > lastBlockX - 60;
-    const withinYRange = tower.y - y <= 70;
-    if (withinXRange && withinYRange) {
-      tower.golden = xlast < lastBlockX + 5 && xlast > lastBlockX - 5;
-      return true;
-    }
-    return false;
-  };
+  const collided = useCallback(
+    (tower: Tower): boolean => {
+      if (tower.size === 0) return false;
+      const lastBlockX = tower.xlist[tower.xlist.length - 1];
+      const withinXRange = xlast < lastBlockX + 60 && xlast > lastBlockX - 60;
+      const withinYRange = tower.y - y <= 70;
+      if (withinXRange && withinYRange) {
+        tower.golden = xlast < lastBlockX + 5 && xlast > lastBlockX - 5;
+        return true;
+      }
+      return false;
+    },
+    [xlast, y]
+  );
 
-  const toBuild = (tower: Tower): boolean =>
-    tower.size === 0 || collided(tower);
+  const toBuild = useCallback(
+    (tower: Tower): boolean => tower.size === 0 || collided(tower),
+    [collided]
+  );
 
-  const display = (
-    context: CanvasRenderingContext2D,
-    origin: { x: number; y: number }
-  ) => {
-    if (image && state === "ready") {
-      context.drawImage(image, x, y);
-      drawRope(context, origin);
-    }
-  };
+  const display = useCallback(
+    (context: CanvasRenderingContext2D, origin: { x: number; y: number }) => {
+      if (image && state === "ready") {
+        context.drawImage(image, x, y);
+        drawRope(context, origin);
+      }
+    },
+    [image, state, x, y]
+  );
 
-  const drawRope = (
-    context: CanvasRenderingContext2D,
-    origin: { x: number; y: number }
-  ) => {
-    context.beginPath();
-    context.moveTo(origin.x, origin.y);
-    context.lineTo(x + 32, y);
-    context.stroke();
-  };
+  const drawRope = useCallback(
+    (context: CanvasRenderingContext2D, origin: { x: number; y: number }) => {
+      context.beginPath();
+      context.moveTo(origin.x, origin.y);
+      context.lineTo(x + 32, y);
+      context.stroke();
+    },
+    [x, y]
+  );
 
-  const respawn = (tower: Tower) => {
+  const respawn = useCallback((tower: Tower) => {
     setAngle(tower.size % 2 === 0 ? -45 : 45);
     setY(150);
     setX(370);
     setSpeed(0);
     setState("ready");
     force *= 1.02;
-  };
+  }, []);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setX(370);
     setY(150);
     setSpeed(0);
@@ -142,7 +150,7 @@ const useBlock = (): Block => {
     setAcceleration(0);
     setXlast(0);
     force = -0.001;
-  };
+  }, []);
 
   return {
     swing,
@@ -177,27 +185,30 @@ const useTower = (): Tower => {
     setImage(img);
   }, []);
 
-  const build = (block: Block) => {
-    setSize((prevSize) => prevSize + 1);
-    setOnscreen((prevOnscreen) => prevOnscreen + 1);
+  const build = useCallback(
+    (block: Block) => {
+      setSize((prevSize) => prevSize + 1);
+      setOnscreen((prevOnscreen) => prevOnscreen + 1);
 
-    if (size === 0) {
-      setXbase(block.xlast);
-      setXlist([block.xlast]);
-    } else {
-      setXlist((prevXlist) => [...prevXlist, block.xlast]);
-    }
+      if (size === 0) {
+        setXbase(block.xlast);
+        setXlist([block.xlast]);
+      } else {
+        setXlist((prevXlist) => [...prevXlist, block.xlast]);
+      }
 
-    if (size <= 5) {
-      setHeight((prevHeight) => size * 64);
-      setY((prevY) => 600 - height);
-    } else {
-      setHeight((prevHeight) => prevHeight + 64);
-      setY((prevY) => prevY - 64);
-    }
-  };
+      if (size <= 5) {
+        setHeight((prevHeight) => size * 64);
+        setY((prevY) => 600 - height);
+      } else {
+        setHeight((prevHeight) => prevHeight + 64);
+        setY((prevY) => prevY - 64);
+      }
+    },
+    [size, height]
+  );
 
-  const wobble = () => {
+  const wobble = useCallback(() => {
     const width = getWidth();
     if ((width > 100 || width < -100) && size >= 5) {
       setWobbling(true);
@@ -210,18 +221,21 @@ const useTower = (): Tower => {
     } else if (change < -20) {
       setSpeed(0.4);
     }
-  };
+  }, [size, wobbling, change, speed]);
 
-  const display = (context: CanvasRenderingContext2D) => {
-    const buildlist = xlist.slice(-onscreen);
-    buildlist.forEach((blockX, index) => {
-      if (image) {
-        context.drawImage(image, blockX, 600 - 64 * (index + 1));
-      }
-    });
-  };
+  const display = useCallback(
+    (context: CanvasRenderingContext2D) => {
+      const buildlist = xlist.slice(-onscreen);
+      buildlist.forEach((blockX, index) => {
+        if (image) {
+          context.drawImage(image, blockX, 600 - 64 * (index + 1));
+        }
+      });
+    },
+    [xlist, onscreen, image]
+  );
 
-  const getWidth = (): number => {
+  const getWidth = useCallback((): number => {
     let width = 64;
     if (size > 0) {
       const lastBlockX = xlist[size - 1];
@@ -231,9 +245,9 @@ const useTower = (): Tower => {
           : -(xbase - lastBlockX + 64);
     }
     return width;
-  };
+  }, [size, xlist, xbase]);
 
-  const scroll = () => {
+  const scroll = useCallback(() => {
     if (y <= 440) {
       setY((prevY) => prevY + 5);
       setScrolling(true);
@@ -242,9 +256,9 @@ const useTower = (): Tower => {
       setScrolling(true);
       setOnscreen(3);
     }
-  };
+  }, [y]);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setSize(0);
     setOnscreen(0);
     setY(600);
@@ -255,7 +269,7 @@ const useTower = (): Tower => {
     setWobbling(false);
     setScrolling(false);
     setGolden(false);
-  };
+  }, []);
 
   return {
     build,
@@ -274,12 +288,6 @@ const GameCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const block = useBlock();
   const tower = useTower();
-  const [gameState, setGameState] = useState({
-    block,
-    tower,
-    score: 0,
-    gameOver: false,
-  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
