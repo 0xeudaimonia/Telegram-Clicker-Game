@@ -1,6 +1,6 @@
+"use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 
-// Define the types for the game objects
 interface Block {
   swing: () => void;
   drop: (tower: Tower) => void;
@@ -50,11 +50,10 @@ const useBlock = (): Block => {
     const rope_length = 100;
     let newAngle = angle + speed;
 
-    // Limit angle between -135 degrees and 45 degrees (180 degrees swing)
     if (newAngle > 45) {
       newAngle = 45;
-    } else if (newAngle < -135) {
-      newAngle = -135;
+    } else if (newAngle < -45) {
+      newAngle = 130;
     }
 
     setX(370 + rope_length * Math.sin(newAngle));
@@ -62,7 +61,22 @@ const useBlock = (): Block => {
     setAngle(newAngle);
     setAcceleration(Math.sin(newAngle) * force);
     setSpeed(speed + 1.5 * acceleration);
-  }, [angle, speed]);
+  }, [acceleration, angle, force, speed]);
+
+  const collided = useCallback(
+    (tower: Tower): boolean => {
+      if (tower.size === 0) return false;
+      const lastBlockX = tower.xlist[tower.xlist.length - 1];
+      const withinXRange = xlast < lastBlockX + 60 && xlast > lastBlockX - 60;
+      const withinYRange = tower.y - y <= 70;
+      if (withinXRange && withinYRange) {
+        tower.golden = xlast < lastBlockX + 5 && xlast > lastBlockX - 5;
+        return true;
+      }
+      return false;
+    },
+    [xlast, y]
+  );
 
   const drop = useCallback(
     (tower: Tower) => {
@@ -84,42 +98,17 @@ const useBlock = (): Block => {
       }
 
       if (state === "dropped") {
-        setSpeed(speed + grav);
-        setY(y + speed);
+        setSpeed((prevSpeed) => prevSpeed + grav);
+        setY((prevY) => prevY + speed);
         setXlast(x);
       }
     },
-    [state, x, y, speed, grav]
-  );
-
-  const collided = useCallback(
-    (tower: Tower): boolean => {
-      if (tower.size === 0) return false;
-      const lastBlockX = tower.xlist[tower.xlist.length - 1];
-      const withinXRange = xlast < lastBlockX + 60 && xlast > lastBlockX - 60;
-      const withinYRange = tower.y - y <= 70;
-      if (withinXRange && withinYRange) {
-        tower.golden = xlast < lastBlockX + 5 && xlast > lastBlockX - 5;
-        return true;
-      }
-      return false;
-    },
-    [xlast, y]
+    [state, x, y, speed, grav, collided]
   );
 
   const toBuild = useCallback(
     (tower: Tower): boolean => tower.size === 0 || collided(tower),
     [collided]
-  );
-
-  const display = useCallback(
-    (context: CanvasRenderingContext2D, origin: { x: number; y: number }) => {
-      if (image && state === "ready") {
-        context.drawImage(image, x, y);
-        drawRope(context, origin);
-      }
-    },
-    [image, state, x, y]
   );
 
   const drawRope = useCallback(
@@ -132,13 +121,24 @@ const useBlock = (): Block => {
     [x, y]
   );
 
+  const display = useCallback(
+    (context: CanvasRenderingContext2D, origin: { x: number; y: number }) => {
+      if (image) {
+        context.drawImage(image, x, y);
+        if (state === "ready") {
+          drawRope(context, origin);
+        }
+      }
+    },
+    [image, state, x, y, drawRope]
+  );
+
   const respawn = useCallback((tower: Tower) => {
     setAngle(tower.size % 2 === 0 ? -45 : 45);
     setY(150);
     setX(370);
     setSpeed(0);
     setState("ready");
-    force *= 1.02;
   }, []);
 
   const reset = useCallback(() => {
@@ -149,7 +149,6 @@ const useBlock = (): Block => {
     setState("ready");
     setAcceleration(0);
     setXlast(0);
-    force = -0.001;
   }, []);
 
   return {
@@ -198,8 +197,8 @@ const useTower = (): Tower => {
       }
 
       if (size <= 5) {
-        setHeight((prevHeight) => size * 64);
-        setY((prevY) => 600 - height);
+        setHeight(size * 64);
+        setY(600 - height);
       } else {
         setHeight((prevHeight) => prevHeight + 64);
         setY((prevY) => prevY - 64);
@@ -207,6 +206,18 @@ const useTower = (): Tower => {
     },
     [size, height]
   );
+
+  const getWidth = useCallback((): number => {
+    let width = 64;
+    if (size > 0) {
+      const lastBlockX = xlist[size - 1];
+      width =
+        lastBlockX > xbase
+          ? lastBlockX - xbase + 64
+          : -(xbase - lastBlockX + 64);
+    }
+    return width;
+  }, [size, xlist, xbase]);
 
   const wobble = useCallback(() => {
     const width = getWidth();
@@ -221,7 +232,7 @@ const useTower = (): Tower => {
     } else if (change < -20) {
       setSpeed(0.4);
     }
-  }, [size, wobbling, change, speed]);
+  }, [size, wobbling, change, speed, getWidth]);
 
   const display = useCallback(
     (context: CanvasRenderingContext2D) => {
@@ -234,18 +245,6 @@ const useTower = (): Tower => {
     },
     [xlist, onscreen, image]
   );
-
-  const getWidth = useCallback((): number => {
-    let width = 64;
-    if (size > 0) {
-      const lastBlockX = xlist[size - 1];
-      width =
-        lastBlockX > xbase
-          ? lastBlockX - xbase + 64
-          : -(xbase - lastBlockX + 64);
-    }
-    return width;
-  }, [size, xlist, xbase]);
 
   const scroll = useCallback(() => {
     if (y <= 440) {
@@ -288,6 +287,25 @@ const GameCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const block = useBlock();
   const tower = useTower();
+  const [gameState, setGameState] = useState("start");
+
+  const handleStart = () => {
+    setGameState("playing");
+  };
+
+  const handleRestart = () => {
+    block.reset();
+    tower.reset();
+    setGameState("playing");
+  };
+
+  const handleClick = () => {
+    if (gameState === "gameover") {
+      handleRestart();
+    } else if (block.state === "ready") {
+      block.state = "dropped";
+    }
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -317,9 +335,7 @@ const GameCanvas = () => {
         }
 
         if (block.state === "miss") {
-          tower.reset();
-          block.reset();
-          return;
+          setGameState("gameover");
         }
 
         block.display(context, origin);
@@ -328,7 +344,9 @@ const GameCanvas = () => {
         requestAnimationFrame(gameLoop);
       };
 
-      gameLoop();
+      if (gameState === "playing") {
+        gameLoop();
+      }
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -350,15 +368,42 @@ const GameCanvas = () => {
       window.removeEventListener("keydown", handleKeyDown);
       canvas?.removeEventListener("click", handleClick);
     };
-  }, [block, tower]);
+  }, [block, tower, gameState]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={800}
-      height={600}
-      className="border border-black w-full bg-[url('/assets/background0.jpg')] bg-cover bg-center rounded-2xl"
-    />
+    <div className="relative w-full h-full">
+      <canvas
+        ref={canvasRef}
+        width={800}
+        height={600}
+        className="border border-black w-full bg-[url('/assets/background0.jpg')] bg-cover bg-center rounded-2xl"
+        onClick={handleClick}
+      />
+      {gameState === "start" && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="bg-black bg-opacity-50 text-white rounded-lg p-8">
+            <h1 className="text-2xl mb-4">Tower Building Game</h1>
+            <button
+              onClick={handleStart}
+              className="px-6 py-3 bg-blue-500 rounded-md text-2xl hover:bg-blue-700"
+            >
+              Start Game
+            </button>
+          </div>
+        </div>
+      )}
+      {gameState === "gameover" && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white">
+          <h1 className="text-4xl mb-4">Game Over</h1>
+          <button
+            onClick={handleRestart}
+            className="px-6 py-3 bg-blue-500 rounded-md text-2xl hover:bg-blue-700"
+          >
+            Restart
+          </button>
+        </div>
+      )}
+    </div>
   );
 };
 
