@@ -1,24 +1,29 @@
-"use client";
-import React, { useState } from "react";
 import Image from "next/image";
 import Button from "@components/Button";
 import CardComponent from "@components/Card";
-import Games from "@components/GameCanvas";
+import dynamic from "next/dynamic";
+
+const GameCanvas = dynamic(() => import("../components/GameCanvas"), {
+  ssr: false,
+});
 
 export default function Card() {
   const cardData = [
     {
+      id: 1,
       title: "Floors built",
       titleColor: "text-[#2496FF]",
       value: "+513",
       iconSrc: "/coin.svg",
     },
     {
+      id: 2,
       title: "Floors to update",
       titleColor: "text-[#FABB1E]",
       value: "+513",
     },
     {
+      id: 3,
       title: "Rent in hour",
       titleColor: "text-[#0FD73B]",
       value: "+513",
@@ -29,9 +34,9 @@ export default function Card() {
   return (
     <>
       <div className="flex justify-center items-center gap-3 text-center">
-        {cardData.map((card, index) => (
+        {cardData.map((card) => (
           <CardComponent
-            key={index}
+            key={card.id}
             title={card.title}
             titleColor={card.titleColor}
             value={card.value}
@@ -45,7 +50,7 @@ export default function Card() {
         <h2 className="">513 000</h2>
       </div>
       <div>
-        <Games />
+        <GameCanvas />
       </div>
 
       <div className="my-5 flex justify-between items-center">
