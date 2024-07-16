@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Button from "@components/Button";
 import CardComponent from "@components/Card";
-import Games from "@components/GameCanvas";
+import dynamic from "next/dynamic";
+
+const GameCanvas = dynamic(() => import("../components/GameCanvas"), {
+  ssr: false,
+});
 
 export default function Card() {
   const cardData = [
@@ -46,7 +50,7 @@ export default function Card() {
         <h2 className="">513 000</h2>
       </div>
       <div>
-        <Games />
+        <GameCanvas />
       </div>
 
       <div className="my-5 flex justify-between items-center">
