@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import { getBoosterReward, calculateSpeedIncrease } from "../utils/gameLogic";
 import useBlock from "./Block";
 import useTower from "./Tower";
 
@@ -9,6 +10,10 @@ const GameCanvas = () => {
   const block = useBlock();
   const tower = useTower();
   const [gameState, setGameState] = useState("start");
+  const [boosterLevel, setBoosterLevel] = useState(1);
+  const [score, setScore] = useState(0);
+  const [reward, setReward] = useState(0);
+  const [points, setPoints] = useState(0);
 
   const handleStart = () => {
     setGameState("playing");
@@ -18,6 +23,9 @@ const GameCanvas = () => {
     block.reset();
     tower.reset();
     setGameState("playing");
+    setScore(0);
+    setReward(0);
+    setPoints(0);
   };
 
   const handleClick = () => {
@@ -49,6 +57,17 @@ const GameCanvas = () => {
         if (block.toBuild(tower)) {
           tower.build(block);
           block.respawn(tower);
+          setScore(score + 1);
+
+          if ((score + 1) % 10 === 0) {
+            setPoints(points + 1000);
+            const baseReward = getBoosterReward(boosterLevel);
+            const speedIncrease = calculateSpeedIncrease(
+              baseReward,
+              boosterLevel
+            );
+            setReward(speedIncrease);
+          }
         } else {
           block.state = "miss";
         }
@@ -84,7 +103,7 @@ const GameCanvas = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [block, tower, gameState]);
+  }, [block, tower, gameState, score, boosterLevel, points]);
 
   return (
     <div className="relative w-full h-full">
@@ -92,7 +111,7 @@ const GameCanvas = () => {
         ref={canvasRef}
         width={800}
         height={600}
-        className="border border-black w-full bg-[url('/assets/background0.jpg')] bg-cover bg-center rounded-2xl"
+        className="border border-black w-full h-full bg-[url('/assets/background0.jpg')] bg-cover bg-center rounded-2xl"
         onClick={handleClick}
       />
       {gameState === "start" && (
@@ -119,6 +138,11 @@ const GameCanvas = () => {
           </button>
         </div>
       )}
+      <div className="absolute top-0 left-0 p-4 text-white">
+        <h5>Score: {score}</h5>
+        <h5>Reward: {reward}</h5>
+        <h5>Points: {points}</h5>
+      </div>
     </div>
   );
 };

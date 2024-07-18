@@ -29,7 +29,7 @@ const useTower = (): Tower => {
   const build = useCallback((block: Block) => {
     setSize((prevSize) => prevSize + 1);
     setXlist((prevXlist) => [...prevXlist, block.xlast]);
-    setY((prevY) => prevY - 64);
+    setY((prevY) => prevY - 10);
   }, []);
 
   const display = useCallback(
