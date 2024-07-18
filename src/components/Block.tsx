@@ -63,9 +63,14 @@ const useBlock = (): Block => {
     (tower: Tower): boolean => {
       if (tower.size === 0) return false;
       const lastBlockX = tower.xlist[tower.xlist.length - 1];
-      const withinXRange = xlast < lastBlockX + 60 && xlast > lastBlockX - 60;
+      const withinXRangeLast =
+        xlast < lastBlockX + 60 && xlast > lastBlockX - 60;
+      const firstBlockX = tower.xlist[0];
+      const withinXRangeFirst =
+        xlast < firstBlockX + 60 && xlast > firstBlockX - 60;
       const withinYRange = tower.y - y <= 64 && tower.y - y >= 0;
-      return withinXRange && withinYRange;
+      const onEdge = xlast === firstBlockX || xlast === lastBlockX;
+      return withinXRangeLast && withinXRangeFirst && withinYRange && !onEdge;
     },
     [xlast, y]
   );

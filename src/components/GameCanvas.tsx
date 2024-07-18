@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { getBoosterReward, calculateSpeedIncrease } from "../utils/gameLogic";
 import useBlock from "./Block";
 import useTower from "./Tower";
@@ -14,6 +14,7 @@ const GameCanvas = () => {
   const [score, setScore] = useState(0);
   const [reward, setReward] = useState(0);
   const [points, setPoints] = useState(0);
+  const [backgroundY, setBackgroundY] = useState(0);
 
   const handleStart = () => {
     setGameState("playing");
@@ -26,6 +27,7 @@ const GameCanvas = () => {
     setScore(0);
     setReward(0);
     setPoints(0);
+    setBackgroundY(0);
   };
 
   const handleClick = () => {
@@ -57,16 +59,23 @@ const GameCanvas = () => {
         if (block.toBuild(tower)) {
           tower.build(block);
           block.respawn(tower);
-          setScore(score + 1);
+          setScore((prevScore) => prevScore + 1);
 
           if ((score + 1) % 10 === 0) {
-            setPoints(points + 1000);
+            setPoints((prevPoints) => {
+              const newPoints = prevPoints + 1000;
+              return newPoints;
+            });
             const baseReward = getBoosterReward(boosterLevel);
             const speedIncrease = calculateSpeedIncrease(
               baseReward,
               boosterLevel
             );
             setReward(speedIncrease);
+          }
+
+          if (score + 1) {
+            setBackgroundY((prevY) => (prevY + 40) % 1800);
           }
         } else {
           block.state = "miss";
@@ -76,6 +85,28 @@ const GameCanvas = () => {
       if (block.state === "miss") {
         setGameState("gameover");
       }
+
+      // Draw the background images
+      const drawBackground = (context: CanvasRenderingContext2D) => {
+        const background1 = new Image();
+        background1.src = "/assets/background0.jpg";
+        const background2 = new Image();
+        background2.src = "/assets/background1.jpg";
+
+        if (backgroundY < 1200) {
+          context.drawImage(background2, 0, backgroundY - 600);
+          context.drawImage(background1, 0, backgroundY);
+          context.drawImage(background2, 0, backgroundY - 1200);
+        } else {
+          context.drawImage(background2, 0, backgroundY - 1800);
+          context.drawImage(background2, 0, backgroundY - 1200);
+          if (backgroundY % 600 === 0) {
+            setBackgroundY(1200);
+          }
+        }
+      };
+
+      drawBackground(context!);
 
       block.display(context!, origin);
       tower.display(context!);
@@ -103,7 +134,7 @@ const GameCanvas = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [block, tower, gameState, score, boosterLevel, points]);
+  }, [block, tower, gameState, score, boosterLevel, points, backgroundY]);
 
   return (
     <div className="relative w-full h-full">
@@ -111,7 +142,7 @@ const GameCanvas = () => {
         ref={canvasRef}
         width={800}
         height={600}
-        className="border border-black w-full h-full bg-[url('/assets/background0.jpg')] bg-cover bg-center rounded-2xl"
+        className="border border-black w-full h-full rounded-2xl bg-[url('/assets/mask_group.png')] bg-cover bg-no-repeat"
         onClick={handleClick}
       />
       {gameState === "start" && (
