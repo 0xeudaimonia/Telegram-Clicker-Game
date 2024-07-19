@@ -86,23 +86,33 @@ const GameCanvas = () => {
         setGameState("gameover");
       }
 
-      // Draw the background images
       const drawBackground = (context: CanvasRenderingContext2D) => {
-        const background1 = new Image();
-        background1.src = "/assets/background0.jpg";
-        const background2 = new Image();
-        background2.src = "/assets/background1.jpg";
+        const backgrounds = [
+          new Image(),
+          new Image(),
+          new Image(),
+          new Image(),
+        ];
 
-        if (backgroundY < 1200) {
-          context.drawImage(background2, 0, backgroundY - 600);
-          context.drawImage(background1, 0, backgroundY);
-          context.drawImage(background2, 0, backgroundY - 1200);
-        } else {
-          context.drawImage(background2, 0, backgroundY - 1800);
-          context.drawImage(background2, 0, backgroundY - 1200);
-          if (backgroundY % 600 === 0) {
-            setBackgroundY(1200);
-          }
+        backgrounds[0].src = "/assets/background0.jpg";
+        backgrounds[1].src = "/assets/background1.jpg";
+        backgrounds[2].src = "/assets/background2.jpg";
+        backgrounds[3].src = "/assets/background3.jpg";
+
+        const imageHeight = 600;
+
+        for (let i = 0; i < backgrounds.length; i++) {
+          const yPosition = backgroundY - i * imageHeight;
+          context.drawImage(backgrounds[i], 0, yPosition);
+          context.drawImage(
+            backgrounds[i],
+            0,
+            yPosition - imageHeight * backgrounds.length
+          );
+        }
+
+        if (backgroundY > imageHeight * backgrounds.length) {
+          setBackgroundY(0);
         }
       };
 
@@ -134,7 +144,16 @@ const GameCanvas = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [block, tower, gameState, score, boosterLevel, points, backgroundY]);
+  }, [
+    block,
+    tower,
+    gameState,
+    score,
+    boosterLevel,
+    points,
+    backgroundY,
+    handleClick,
+  ]);
 
   return (
     <div className="relative w-full h-full">
