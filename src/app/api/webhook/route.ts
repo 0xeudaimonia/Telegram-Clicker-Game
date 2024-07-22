@@ -11,6 +11,7 @@ type TelegramUpdate = {
     message?: {
         text: string;
         chat: {
+            first_name: string;
             id: number;
         };
     };
@@ -22,6 +23,7 @@ export async function POST(req: NextRequest) {
         if (update.message && update.message.text) {
           const { text, chat } = update.message;
           const chatId = chat.id;
+          const userName = chat.first_name;
           
           // Handle different commands
           switch (text.trim().toLowerCase()) {
@@ -45,17 +47,28 @@ export async function POST(req: NextRequest) {
               await prisma.user.create({
                 data: {
                   telegramId: chatId,
-                  username: 'unknown',
+                  username: userName,
                   data: { text },
                 },
               });
-              console.log(`Message saved: ${text}`);
             } catch (error) {
               console.error('Error saving message:', error);
               return NextResponse.json('Internal Server Error', { status: 500 });
             }
           } else {
-            console.log(`User with chatId ${chatId} already exists in database.`);
+            try {
+              await prisma.user.update({
+                where: { telegramId: chatId },
+                data: {
+                  username: userName,
+                  data: {  text: text},
+                },
+              });
+            }
+            catch (error) {
+              console.error('Error updating message:', error);
+              return NextResponse.json('Internal Server Error', { status: 500 });
+            }
           }
         }
         return NextResponse.json('ok');
