@@ -30,11 +30,35 @@ const GameCanvas = () => {
     setBackgroundY(0);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleClick = () => {
     if (gameState === "gameover") {
       handleRestart();
     } else if (block.state === "ready") {
       block.state = "dropped";
+    }
+  };
+
+  const saveScore = async (score: number, level: number) => {
+    const userId = 1; // Replace with the actual user ID
+    try {
+      const response = await fetch("/api/saveScore", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          score,
+          level,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save score");
+      }
+    } catch (error) {
+      console.error("Error saving score:", error);
     }
   };
 
@@ -84,6 +108,7 @@ const GameCanvas = () => {
 
       if (block.state === "miss") {
         setGameState("gameover");
+        saveScore(score, boosterLevel); // Save score when the game is over
       }
 
       const drawBackground = (context: CanvasRenderingContext2D) => {

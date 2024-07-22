@@ -3,7 +3,7 @@ import { Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import BottomNav from "./bottomNav";
 import Navbar from "./navbar";
-import Image from "next/image";
+import User from "@components/User";
 
 const inter = Roboto_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 
@@ -21,18 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Navbar />
-        <div className="p-4 text-white bg-black">
-          <div className="flex justify-start items-center mb-4">
-            <Image
-              src="/avatar.jpeg"
-              alt="avatar"
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
-            <h2 className="text-lg font-bold ms-4">Gleb Vashkevich (Пpopaб)</h2>
-          </div>
-        </div>
+        <User />
         <div className="card border-t-2 p-4 pb-16" id="border-card">
           {children}
         </div>

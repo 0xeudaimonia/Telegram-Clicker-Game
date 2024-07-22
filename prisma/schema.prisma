@@ -9,15 +9,56 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
+  id           Int            @id @default(autoincrement())
+  telegramId   Int            @unique
+  username     String?
+  createdAt    DateTime       @default(now())
+  data         Json?
+  Game         Game[]
+  ReferralCode ReferralCode[]
+  Bonus        Bonus[]
+  VideoBonus   VideoBonus[]
+}
+
+model Game {
   id        Int      @id @default(autoincrement())
-  telegramId Int     @unique
-  username  String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  score     Int      @default(0)
+  level     Int      @default(1)
   createdAt DateTime @default(now())
-  data      Json?
+  updatedAt DateTime @updatedAt
+}
+
+model ReferralCode {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bonus {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  score     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VideoBonus {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  platform  String
+  videoType String
+  createdAt DateTime @default(now())
 }
