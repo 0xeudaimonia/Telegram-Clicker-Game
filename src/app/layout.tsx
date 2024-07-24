@@ -4,6 +4,7 @@ import "./globals.css";
 import BottomNav from "./bottomNav";
 import Navbar from "./navbar";
 import User from "@components/User";
+import Script from "next/script";
 
 const inter = Roboto_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Script src="https://telegram.org/js/telegram-web-app.js" async />
       <body className={inter.className}>
         <Navbar />
         <User />
