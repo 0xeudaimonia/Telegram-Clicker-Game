@@ -56,7 +56,7 @@ export default function Card() {
       <div className="my-5 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <Image src="/icon02.svg" alt="icon" width={44} height={44} />
-          <h3 className="text-base fw-bolder">513/513</h3>
+          <h3 className="text-base fw-bolder">10/10</h3>
         </div>
         <div>
           <Button

@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 
-const ReferralCode = ({ userId }: { userId: number }) => {
+const ReferralCode = ({ userId }: { userId: string }) => {
   const [referralCode, setReferralCode] = useState("");
 
   useEffect(() => {
