@@ -1,6 +1,10 @@
+"use client";
+import React, { useState, useEffect } from "react";
 import CardList from "./cardList";
 import TabelList from "./tabelList";
 import CopyToClipboard from "@/components/copyToClipboard";
+
+declare const window: any;
 
 const cardListData = [
   {
@@ -48,8 +52,6 @@ const tabelListData = [
   },
 ];
 
-const userId = 1;
-
 export default function ReferalPage() {
   return (
     <div className="text-white bg-[url(/background2.png)] pb-20">
@@ -62,7 +64,7 @@ export default function ReferalPage() {
       <h5 className="text-center">Бонус за повышение уровня</h5>
       <TabelList data={tabelListData} />
 
-      <CopyToClipboard userId={userId.toString()} />
+      <CopyToClipboard userId={1} />
     </div>
   );
 }

@@ -1,9 +1,8 @@
-// components/ReferralCode.js
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 
-const ReferralCode = ({ userId }: { userId: string }) => {
+const ReferralCode = ({ userId }: { userId: number }) => {
   const [referralCode, setReferralCode] = useState("");
 
   useEffect(() => {
@@ -12,16 +11,15 @@ const ReferralCode = ({ userId }: { userId: string }) => {
         const response = await fetch(`/api/referralCode?userId=${userId}`);
         const data = await response.json();
         if (response.ok) {
-          setReferralCode(data.code);
+          setReferralCode(data.token);
         } else if (data.error === "Referral code not found") {
-          // Generate a new referral code if it doesn't exist
-          const response = await fetch("/api/referralCode", {
+          const postResponse = await fetch("/api/referralCode", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId }),
           });
-          const newData = await response.json();
-          if (response.ok) {
+          const newData = await postResponse.json();
+          if (postResponse.ok) {
             setReferralCode(newData.token);
           } else {
             console.error("Error creating referral code:", newData.error);
