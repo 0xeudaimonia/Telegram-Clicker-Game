@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { getBoosterReward, calculateSpeedIncrease } from "../utils/gameLogic";
 import useBlock from "./Block";
 import useTower from "./Tower";
+declare const window: any;
 
 const GameCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -39,8 +40,68 @@ const GameCanvas = () => {
     }
   };
 
+  const [userId, setUserId] = useState<string | null>(null);
+  const [tgUserId, setTgUserId] = useState<string>("");
+
+  useEffect(() => {
+    const loadTelegramScript = () => {
+      if (!window.Telegram) {
+        const script = document.createElement("script");
+        script.src = "https://telegram.org/js/telegram-web-app.js";
+        script.async = true;
+        script.onload = () => {
+          initializeTelegram();
+        };
+        document.body.appendChild(script);
+      } else {
+        initializeTelegram();
+      }
+    };
+
+    const initializeTelegram = () => {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+
+      const data = tg.initDataUnsafe;
+      if (data && data.user && data.user.id) {
+        if (userId !== data.user.id) {
+          setUserId(data.user.id);
+        }
+      } else {
+        console.error("User ID not found in initDataUnsafe:", data);
+      }
+    };
+
+    loadTelegramScript();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      if (userId) {
+        try {
+          const response = await fetch(
+            `/api/current_user?telegramUserId=${userId}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setTgUserId(data.userId || "Guest");
+          } else {
+            const errorData = await response.json();
+            console.error("Error fetching user name:", errorData.error);
+          }
+        } catch (error) {
+          console.error("Error fetching user name:", error);
+        }
+      } else {
+        console.warn("User ID is not set.");
+      }
+    };
+
+    fetchUserId();
+  }, [userId]);
+
   const saveScore = async (score: number, level: number) => {
-    const userId = 1; // Replace with the actual user ID
+    const userId = tgUserId;
     try {
       const response = await fetch("/api/saveScore", {
         method: "POST",
@@ -108,7 +169,7 @@ const GameCanvas = () => {
 
       if (block.state === "miss") {
         setGameState("gameover");
-        saveScore(score, boosterLevel); // Save score when the game is over
+        saveScore(score, boosterLevel);
       }
 
       const drawBackground = (context: CanvasRenderingContext2D) => {
