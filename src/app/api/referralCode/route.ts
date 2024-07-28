@@ -1,21 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { nanoid } from 'nanoid';
-import { log } from 'console';
 
 const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
-  const { userId } = await req.json();
-
-  if (!userId) {
-    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
-  }
-  
-  const token = nanoid(8);
-
-
   try {
+    const { userId } = await req.json();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    }
+
+    // Fetch the user's telegramId
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Generate the referral token
+    const token = `r_${user.telegramId}`;
+
+    // Create the new referral code in the database
     const newReferralCode = await prisma.referralCode.create({
       data: {
         token,
@@ -23,9 +28,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    log('New referral code created:', newReferralCode);
-
-    console.log('New referral code created:', newReferralCode);
     return NextResponse.json(newReferralCode);
   } catch (error) {
     console.error('Error creating referral code:', error);
@@ -35,15 +37,15 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const user_id = Number(searchParams.get('userId'));
+  const user_id = Number(searchParams.get('user_id'));
 
   if (!user_id) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
   }
 
   try {
-    const referralCode = await prisma.referralCode.findUnique({
-      where: { id: user_id },
+    const referralCode = await prisma.referralCode.findFirstOrThrow({
+      where: { userId: user_id },
     });
 
     if (!referralCode) {

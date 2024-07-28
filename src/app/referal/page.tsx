@@ -53,6 +53,66 @@ const tabelListData = [
 ];
 
 export default function ReferalPage() {
+  const [userId, setUserId] = useState<string | null>(null);
+  const [tgUserId, setTgUserId] = useState<string>("");
+
+  useEffect(() => {
+    const loadTelegramScript = () => {
+      if (!window.Telegram) {
+        const script = document.createElement("script");
+        script.src = "https://telegram.org/js/telegram-web-app.js";
+        script.async = true;
+        script.onload = () => {
+          initializeTelegram();
+        };
+        document.body.appendChild(script);
+      } else {
+        initializeTelegram();
+      }
+    };
+
+    const initializeTelegram = () => {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+
+      const data = tg.initDataUnsafe;
+      if (data && data.user && data.user.id) {
+        if (userId !== data.user.id) {
+          setUserId(data.user.id);
+        }
+      } else {
+        console.error("User ID not found in initDataUnsafe:", data);
+      }
+    };
+
+    loadTelegramScript();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      if (userId) {
+        try {
+          const response = await fetch(
+            `/api/current_user?telegramUserId=${userId}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setTgUserId(data.userId || "Guest");
+          } else {
+            const errorData = await response.json();
+            console.error("Error fetching user name:", errorData.error);
+          }
+        } catch (error) {
+          console.error("Error fetching user name:", error);
+        }
+      } else {
+        console.warn("User ID is not set.");
+      }
+    };
+
+    fetchUserId();
+  }, [userId]);
+
   return (
     <div className="text-white bg-[url(/background2.png)] pb-20">
       <div className="text-center">
@@ -64,7 +124,7 @@ export default function ReferalPage() {
       <h5 className="text-center">Бонус за повышение уровня</h5>
       <TabelList data={tabelListData} />
 
-      <CopyToClipboard userId={1} />
+      <CopyToClipboard userId={tgUserId} />
     </div>
   );
 }

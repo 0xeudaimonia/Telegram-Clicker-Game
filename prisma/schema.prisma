@@ -15,15 +15,16 @@ datasource db {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
-  telegramId   Int            @unique
-  username     String?
-  createdAt    DateTime       @default(now())
-  data         Json?
-  Game         Game[]
-  ReferralCode ReferralCode[]
-  Bonus        Bonus[]
-  VideoBonus   VideoBonus[]
+  id            Int            @id @default(autoincrement())
+  telegramId    Int            @unique
+  username      String?
+  createdAt     DateTime       @default(now())
+  data          Json?
+  referralToken String?
+  Game          Game[]
+  ReferralCode  ReferralCode[]
+  Bonus         Bonus[]
+  VideoBonus    VideoBonus[]
 }
 
 model Game {

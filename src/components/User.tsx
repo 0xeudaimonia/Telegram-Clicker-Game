@@ -30,7 +30,6 @@ const User = () => {
       const data = tg.initDataUnsafe;
       if (data && data.user && data.user.id) {
         if (userId !== data.user.id) {
-          console.log("User ID:", data.user.id);
           setUserId(data.user.id);
         }
       } else {
@@ -43,7 +42,6 @@ const User = () => {
 
   useEffect(() => {
     const fetchUserName = async () => {
-      console.log("Fetching user name..." + userId);
       if (userId) {
         try {
           const response = await fetch(
@@ -51,7 +49,6 @@ const User = () => {
           );
           if (response.ok) {
             const data = await response.json();
-            console.log("User name:", data);
             setUserName(data.userName || "Guest");
           } else {
             const errorData = await response.json();

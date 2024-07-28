@@ -2,13 +2,13 @@
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 
-const ReferralCode = ({ userId }: { userId: number }) => {
+const ReferralCode = ({ userId }: { userId: string }) => {
   const [referralCode, setReferralCode] = useState("");
 
   useEffect(() => {
     const fetchReferralCode = async () => {
       try {
-        const response = await fetch(`/api/referralCode?userId=${userId}`);
+        const response = await fetch(`/api/referralCode?user_id=${userId}`);
         const data = await response.json();
         if (response.ok) {
           setReferralCode(data.token);
@@ -37,7 +37,9 @@ const ReferralCode = ({ userId }: { userId: number }) => {
 
   const handleCopy = useCallback(() => {
     navigator.clipboard
-      .writeText(referralCode)
+      .writeText(
+        `https://t.me/TeleBotGame_bot/telegramNextjs?start=${referralCode}`
+      )
       .then(() => {
         console.log("Copied to clipboard");
       })

@@ -21,55 +21,60 @@ export async function POST(req: NextRequest) {
     if (req.method === 'POST') {
         const update: TelegramUpdate = await req.json();
         if (update.message && update.message.text) {
-          const { text, chat } = update.message;
-          const chatId = chat.id;
-          const userName = chat.first_name;
-          
-          // Handle different commands
-          switch (text.trim().toLowerCase()) {
-              case '/start':
-                  await sendStartMessage(chatId);
-                  break;
-              case '/about':
-                  await sendAboutMessage(chatId);
-                  break;
-              default:
-                  await sendMessage(chatId, `You said: ${text}`);
-                  break;
-          }
-          
-          const existingUser = await prisma.user.findUnique({
-            where: { telegramId: chatId },
-          });
-          if (!existingUser) {
-            // If user does not exist, save the message
-            try {
-              await prisma.user.create({
-                data: {
-                  telegramId: chatId,
-                  username: userName,
-                  data: { text },
-                },
-              });
-            } catch (error) {
-              console.error('Error saving message:', error);
-              return NextResponse.json('Internal Server Error', { status: 500 });
+            const { text, chat } = update.message;
+            const chatId = chat.id;
+            const userName = chat.first_name;
+            
+            // Extract referral token from the message if it exists
+            const referralToken = text.match(/start=r_(\d+)/)?.[1];
+            console.log("referralToken: " + referralToken);
+            
+            // Handle different commands
+            switch (text.trim().toLowerCase()) {
+                case '/start':
+                    await handleStartCommand(chatId, referralToken);
+                    break;
+                case '/about':
+                    await sendAboutMessage(chatId);
+                    break;
+                default:
+                    await sendMessage(chatId, `You said: ${text}`);
+                    break;
             }
-          } else {
-            try {
-              await prisma.user.update({
+            
+            const existingUser = await prisma.user.findUnique({
                 where: { telegramId: chatId },
-                data: {
-                  username: userName,
-                  data: {  text: text},
-                },
-              });
+            });
+
+            if (!existingUser) {
+                // If user does not exist, save the message and referral token
+                try {
+                    await prisma.user.create({
+                        data: {
+                            telegramId: chatId,
+                            username: userName,
+                            data: { text },
+                            referralToken: referralToken ?? null, // Save referral token if exists
+                        },
+                    });
+                } catch (error) {
+                    console.error('Error saving message:', error);
+                    return NextResponse.json('Internal Server Error', { status: 500 });
+                }
+            } else {
+                try {
+                    await prisma.user.update({
+                        where: { telegramId: chatId },
+                        data: {
+                            username: userName,
+                            data: { text },
+                        },
+                    });
+                } catch (error) {
+                    console.error('Error updating message:', error);
+                    return NextResponse.json('Internal Server Error', { status: 500 });
+                }
             }
-            catch (error) {
-              console.error('Error updating message:', error);
-              return NextResponse.json('Internal Server Error', { status: 500 });
-            }
-          }
         }
         return NextResponse.json('ok');
     } else {
@@ -77,8 +82,11 @@ export async function POST(req: NextRequest) {
     }
 }
 
-const sendStartMessage = async (chatId: number) => {
-    const startMessage = 'Welcome to the Bot!\n\nSend /about to learn more about me.';
+const handleStartCommand = async (chatId: number, referralToken?: string) => {
+    let startMessage = 'Welcome to the Bot!\n\nSend /about to learn more about me.';
+    if (referralToken) {
+        startMessage += `\n\nYou were referred by user with token: ${referralToken}`;
+    }
     await sendMessage(chatId, startMessage);
 };
 
@@ -92,11 +100,11 @@ const sendMessage = async (chatId: number, text: string) => {
     await fetch(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify({
             chat_id: chatId,
-            text: text
-        })
+            text: text,
+        }),
     });
 };
