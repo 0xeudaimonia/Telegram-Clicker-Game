@@ -1,51 +1,57 @@
-// pages/api/saveScore.ts
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export default async function saveScore(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const { userId, score, level } = req.body;
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    console.log('Request body:', body);
+    const { userId, score, level, points } = body;
 
-    if (typeof userId !== 'number' || typeof score !== 'number' || typeof level !== 'number') {
-      return res.status(400).json({ error: 'Invalid input' });
+    if (!userId || !score || !level || !points) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    try {
-      // Check if a game record for the user already exists
-      const existingGame = await prisma.game.findUnique({
-        where: { userId },
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Check if a game record for the user already exists
+    const existingGame = await prisma.game.findFirst({
+      where: { userId },
+    });
+
+    let result;
+    if (existingGame) {
+      // Update the existing record
+      result = await prisma.game.update({
+        where: { id: existingGame.id },
+        data: {
+          score: existingGame.score + score,
+          points: existingGame.points + points,
+          level,
+        },
       });
-
-      if (existingGame) {
-        // Update the existing record
-        const updatedGame = await prisma.game.update({
-          where: { userId },
-          data: {
-            score: existingGame.score + score,
-            level: level, 
-          },
-        });
-
-        return res.status(200).json(updatedGame);
-      } else {
-        // Create a new game record if none exists
-        const newGame = await prisma.game.create({
-          data: {
-            userId,
-            score,
-            level,
-          },
-        });
-
-        return res.status(200).json(newGame);
-      }
-    } catch (error) {
-      console.error('Error saving or updating score:', error);
-      return res.status(500).json({ error: 'Error saving or updating score' });
+    } else {
+      result = await prisma.game.create({
+        data: {
+          userId: userId,
+          score: score,
+          level: level,
+          points: points,
+        },
+      });
     }
-  } else {
-    return res.status(405).json({ error: 'Method not allowed' });
+
+    return NextResponse.json(result, { status: 200 });
+  } catch (error) {
+    console.error('Error saving or updating score:', error);
+    if (error instanceof SyntaxError) {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+    }
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

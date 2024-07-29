@@ -1,4 +1,7 @@
 import Card from "../app/card";
+import { getUserData } from "@/utils/webAppUtils";
+
+const userData = getUserData();
 
 export default function Home() {
   return (

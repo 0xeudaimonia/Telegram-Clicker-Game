@@ -20,7 +20,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Script src="https://telegram.org/js/telegram-web-app.js" async />
+      <head>
+        <Script
+          src="https://telegram.org/js/telegram-web-app.js"
+          strategy="beforeInteractive"
+        />
+      </head>
       <body className={inter.className}>
         <Navbar />
         <User />

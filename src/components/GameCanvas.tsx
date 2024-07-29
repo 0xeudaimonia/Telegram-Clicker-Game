@@ -3,9 +3,12 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { getBoosterReward, calculateSpeedIncrease } from "../utils/gameLogic";
 import useBlock from "./Block";
 import useTower from "./Tower";
-declare const window: any;
 
-const GameCanvas = () => {
+interface GameCanvasProps {
+  userId: string;
+}
+
+const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number | null>(null);
   const block = useBlock();
@@ -16,6 +19,7 @@ const GameCanvas = () => {
   const [reward, setReward] = useState(0);
   const [points, setPoints] = useState(0);
   const [backgroundY, setBackgroundY] = useState(0);
+  const [tgUserId, setTgUserId] = useState<string>("");
 
   const handleStart = () => {
     setGameState("playing");
@@ -31,7 +35,6 @@ const GameCanvas = () => {
     setBackgroundY(0);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleClick = () => {
     if (gameState === "gameover") {
       handleRestart();
@@ -39,41 +42,6 @@ const GameCanvas = () => {
       block.state = "dropped";
     }
   };
-
-  const [userId, setUserId] = useState<string | null>(null);
-  const [tgUserId, setTgUserId] = useState<string>("");
-
-  useEffect(() => {
-    const loadTelegramScript = () => {
-      if (!window.Telegram) {
-        const script = document.createElement("script");
-        script.src = "https://telegram.org/js/telegram-web-app.js";
-        script.async = true;
-        script.onload = () => {
-          initializeTelegram();
-        };
-        document.body.appendChild(script);
-      } else {
-        initializeTelegram();
-      }
-    };
-
-    const initializeTelegram = () => {
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-
-      const data = tg.initDataUnsafe;
-      if (data && data.user && data.user.id) {
-        if (userId !== data.user.id) {
-          setUserId(data.user.id);
-        }
-      } else {
-        console.error("User ID not found in initDataUnsafe:", data);
-      }
-    };
-
-    loadTelegramScript();
-  }, [userId]);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -100,8 +68,7 @@ const GameCanvas = () => {
     fetchUserId();
   }, [userId]);
 
-  const saveScore = async (score: number, level: number) => {
-    const userId = tgUserId;
+  const saveScore = async (score: number, level: number, points: number) => {
     try {
       const response = await fetch("/api/saveScore", {
         method: "POST",
@@ -109,9 +76,10 @@ const GameCanvas = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId,
+          userId: tgUserId,
           score,
           level,
+          points: points,
         }),
       });
 
@@ -147,10 +115,7 @@ const GameCanvas = () => {
           setScore((prevScore) => prevScore + 1);
 
           if ((score + 1) % 10 === 0) {
-            setPoints((prevPoints) => {
-              const newPoints = prevPoints + 1000;
-              return newPoints;
-            });
+            setPoints((prevPoints) => prevPoints + 1000);
             const baseReward = getBoosterReward(boosterLevel);
             const speedIncrease = calculateSpeedIncrease(
               baseReward,
@@ -159,9 +124,7 @@ const GameCanvas = () => {
             setReward(speedIncrease);
           }
 
-          if (score + 1) {
-            setBackgroundY((prevY) => (prevY + 40) % 1800);
-          }
+          setBackgroundY((prevY) => (prevY + 40) % 1800);
         } else {
           block.state = "miss";
         }
@@ -169,33 +132,29 @@ const GameCanvas = () => {
 
       if (block.state === "miss") {
         setGameState("gameover");
-        saveScore(score, boosterLevel);
+        saveScore(score, boosterLevel, points);
       }
 
       const drawBackground = (context: CanvasRenderingContext2D) => {
         const backgrounds = [
-          new Image(),
-          new Image(),
-          new Image(),
-          new Image(),
+          "/assets/background0.jpg",
+          "/assets/background1.jpg",
+          "/assets/background2.jpg",
+          "/assets/background3.jpg",
         ];
-
-        backgrounds[0].src = "/assets/background0.jpg";
-        backgrounds[1].src = "/assets/background1.jpg";
-        backgrounds[2].src = "/assets/background2.jpg";
-        backgrounds[3].src = "/assets/background3.jpg";
-
         const imageHeight = 600;
 
-        for (let i = 0; i < backgrounds.length; i++) {
+        backgrounds.forEach((src, i) => {
           const yPosition = backgroundY - i * imageHeight;
-          context.drawImage(backgrounds[i], 0, yPosition);
+          const img = new Image();
+          img.src = src;
+          context.drawImage(img, 0, yPosition);
           context.drawImage(
-            backgrounds[i],
+            img,
             0,
             yPosition - imageHeight * backgrounds.length
           );
-        }
+        });
 
         if (backgroundY > imageHeight * backgrounds.length) {
           setBackgroundY(0);
@@ -220,26 +179,17 @@ const GameCanvas = () => {
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    // window.addEventListener("keydown", handleKeyDown);
     canvas?.addEventListener("click", handleClick);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      // window.removeEventListener("keydown", handleKeyDown);
       canvas?.removeEventListener("click", handleClick);
       if (animationFrameRef.current !== null) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [
-    block,
-    tower,
-    gameState,
-    score,
-    boosterLevel,
-    points,
-    backgroundY,
-    handleClick,
-  ]);
+  }, [block, tower, gameState, score, boosterLevel, points, backgroundY]);
 
   return (
     <div className="relative w-full h-full">
@@ -274,11 +224,11 @@ const GameCanvas = () => {
           </button>
         </div>
       )}
-      <div className="absolute top-0 left-0 p-4 text-white">
+      {/* <div className="absolute top-0 left-0 p-4 text-white">
         <h5>Score: {score}</h5>
         <h5>Reward: {reward}</h5>
         <h5>Points: {points}</h5>
-      </div>
+      </div> */}
     </div>
   );
 };
