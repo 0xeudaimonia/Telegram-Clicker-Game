@@ -4,6 +4,11 @@ import Image from "next/image";
 
 const ReferralCode = ({ userId }: { userId: string }) => {
   const [referralCode, setReferralCode] = useState("");
+  const [copySupported, setCopySupported] = useState(false);
+
+  useEffect(() => {
+    setCopySupported("clipboard" in navigator);
+  }, []);
 
   useEffect(() => {
     const fetchReferralCode = async () => {
@@ -36,17 +41,27 @@ const ReferralCode = ({ userId }: { userId: string }) => {
   }, [userId]);
 
   const handleCopy = useCallback(() => {
-    navigator.clipboard
-      .writeText(
-        `https://t.me/TeleBotGame_bot/telegramNextjs?start=${referralCode}`
-      )
-      .then(() => {
-        console.log("Copied to clipboard");
-      })
-      .catch((err) => {
-        console.error("Failed to copy: ", err);
-      });
-  }, [referralCode]);
+    if (!copySupported) {
+      const textArea = document.createElement("textarea");
+      textArea.value = `https://t.me/TeleBotGame_bot/telegramNextjs?start=${referralCode}`;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      console.log("Copied to clipboard");
+    } else {
+      navigator.clipboard
+        .writeText(
+          `https://t.me/TeleBotGame_bot/telegramNextjs?start=${referralCode}`
+        )
+        .then(() => {
+          console.log("Copied to clipboard");
+        })
+        .catch((err) => {
+          console.error("Failed to copy: ", err);
+        });
+    }
+  }, [copySupported, referralCode]);
 
   return (
     <div className="flex justify-center text-center items-center gap-3 bottom-[5.5rem] fixed w-full px-4 right-0">

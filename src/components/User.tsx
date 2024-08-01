@@ -1,44 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-
-declare const window: any;
+import { getUserData } from "@/utils/webAppUtils";
 
 const User = () => {
-  const [userId, setUserId] = useState<string | null>(null);
   const [userName, setUserName] = useState<string>("");
 
-  useEffect(() => {
-    const loadTelegramScript = () => {
-      if (!window.Telegram) {
-        const script = document.createElement("script");
-        script.src = "https://telegram.org/js/telegram-web-app.js";
-        script.async = true;
-        script.onload = () => {
-          initializeTelegram();
-        };
-        document.body.appendChild(script);
-      } else {
-        initializeTelegram();
-      }
-    };
-
-    const initializeTelegram = () => {
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-
-      const data = tg.initDataUnsafe;
-      if (data && data.user && data.user.id) {
-        if (userId !== data.user.id) {
-          setUserId(data.user.id);
-        }
-      } else {
-        console.error("User ID not found in initDataUnsafe:", data);
-      }
-    };
-
-    loadTelegramScript();
-  }, [userId]);
+  const userData = getUserData();
+  const userId = userData?.id;
 
   useEffect(() => {
     const fetchUserName = async () => {

@@ -3,8 +3,10 @@ import React, { useState, useEffect } from "react";
 import CardList from "./cardList";
 import TabelList from "./tabelList";
 import CopyToClipboard from "@/components/copyToClipboard";
+import { getUserData } from "@/utils/webAppUtils";
+import LayoutHome from "@/components/layouts/index";
 
-declare const window: any;
+const user = getUserData();
 
 const cardListData = [
   {
@@ -52,41 +54,18 @@ const tabelListData = [
   },
 ];
 
+interface UserData {
+  id: number;
+  firstName: string;
+  lastName: string;
+  Username: string;
+  languageCode: string;
+}
+
 export default function ReferalPage() {
-  const [userId, setUserId] = useState<string | null>(null);
   const [tgUserId, setTgUserId] = useState<string>("");
 
-  useEffect(() => {
-    const loadTelegramScript = () => {
-      if (!window.Telegram) {
-        const script = document.createElement("script");
-        script.src = "https://telegram.org/js/telegram-web-app.js";
-        script.async = true;
-        script.onload = () => {
-          initializeTelegram();
-        };
-        document.body.appendChild(script);
-      } else {
-        initializeTelegram();
-      }
-    };
-
-    const initializeTelegram = () => {
-      const tg = window.Telegram.WebApp;
-      tg.ready();
-
-      const data = tg.initDataUnsafe;
-      if (data && data.user && data.user.id) {
-        if (userId !== data.user.id) {
-          setUserId(data.user.id);
-        }
-      } else {
-        console.error("User ID not found in initDataUnsafe:", data);
-      }
-    };
-
-    loadTelegramScript();
-  }, [userId]);
+  const userId = user?.id;
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -114,17 +93,19 @@ export default function ReferalPage() {
   }, [userId]);
 
   return (
-    <div className="text-white bg-[url(/background2.png)] pb-20">
-      <div className="text-center">
-        <h5>Пригласите друзей!</h5>
-        <p className="text-[10px]">Вы и ваш друг получите бонусы</p>
+    <LayoutHome>
+      <div className="text-white bg-[url(/background2.png)] pb-20">
+        <div className="text-center">
+          <h5>Пригласите друзей!</h5>
+          <p className="text-[10px]">Вы и ваш друг получите бонусы</p>
+        </div>
+        <CardList data={cardListData} />
+
+        <h5 className="text-center">Бонус за повышение уровня</h5>
+        <TabelList data={tabelListData} />
+
+        <CopyToClipboard userId={tgUserId} />
       </div>
-      <CardList data={cardListData} />
-
-      <h5 className="text-center">Бонус за повышение уровня</h5>
-      <TabelList data={tabelListData} />
-
-      <CopyToClipboard userId={tgUserId} />
-    </div>
+    </LayoutHome>
   );
 }

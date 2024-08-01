@@ -1,24 +1,26 @@
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 interface CardListProps {
   data: {
+    id: number;
     title: string;
-    points: string;
-    active: boolean;
+    description: string;
+    points: number;
+    createdAt: string;
+    updatedAt: string;
   }[];
 }
 
-export const Card: React.FC<CardListProps> = ({ data }) => {
+const Card = ({ data }: CardListProps) => {
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 gap-4" id="tender">
-      {data.map((item, index) => (
+      {data.map((item) => (
         <div
-          className={`card border px-3 py-1 text-center tender_cards ${
-            item.active ? "" : "opacity-35"
-          }`}
-          key={index}
+          className="card border px-3 py-1 text-center tender_cards"
+          key={item.id}
         >
-          <h5>{item.title}</h5>
+          <h5 className="capitalize">{item.title}</h5>
           <Image
             src="/coin.svg"
             alt="coin"
