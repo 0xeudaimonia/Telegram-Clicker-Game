@@ -4,6 +4,7 @@ import CardList from "./cardList";
 import TabelList from "./tabelList";
 import CopyToClipboard from "@/components/copyToClipboard";
 import { getUserData } from "@/utils/webAppUtils";
+import LayoutHome from "@/components/layouts/index";
 
 const user = getUserData();
 
@@ -92,17 +93,19 @@ export default function ReferalPage() {
   }, [userId]);
 
   return (
-    <div className="text-white bg-[url(/background2.png)] pb-20">
-      <div className="text-center">
-        <h5>Пригласите друзей!</h5>
-        <p className="text-[10px]">Вы и ваш друг получите бонусы</p>
+    <LayoutHome>
+      <div className="text-white bg-[url(/background2.png)] pb-20">
+        <div className="text-center">
+          <h5>Пригласите друзей!</h5>
+          <p className="text-[10px]">Вы и ваш друг получите бонусы</p>
+        </div>
+        <CardList data={cardListData} />
+
+        <h5 className="text-center">Бонус за повышение уровня</h5>
+        <TabelList data={tabelListData} />
+
+        <CopyToClipboard userId={tgUserId} />
       </div>
-      <CardList data={cardListData} />
-
-      <h5 className="text-center">Бонус за повышение уровня</h5>
-      <TabelList data={tabelListData} />
-
-      <CopyToClipboard userId={tgUserId} />
-    </div>
+    </LayoutHome>
   );
 }

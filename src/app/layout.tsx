@@ -5,6 +5,7 @@ import BottomNav from "./bottomNav";
 import Navbar from "./navbar";
 import User from "@components/User";
 import Script from "next/script";
+import { useRouter } from "next/navigation";
 
 const inter = Roboto_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 
@@ -18,22 +19,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <head>
-        <Script
-          src="https://telegram.org/js/telegram-web-app.js"
-          strategy="beforeInteractive"
-        />
-      </head>
-      <body className={inter.className}>
-        <Navbar />
-        <User />
-        <div className="card border-t-2 p-4 pb-16" id="border-card">
-          {children}
-        </div>
-        <BottomNav />
-      </body>
-    </html>
-  );
+  return <>{children}</>;
 }

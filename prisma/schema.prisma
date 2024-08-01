@@ -15,16 +15,17 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  telegramId    Int            @unique
-  username      String?
-  createdAt     DateTime       @default(now())
-  data          Json?
-  referralToken String?
-  Game          Game[]
-  ReferralCode  ReferralCode[]
-  Bonus         Bonus[]
-  VideoBonus    VideoBonus[]
+  id               Int                @id @default(autoincrement())
+  telegramId       Int                @unique
+  username         String?
+  createdAt        DateTime           @default(now())
+  data             Json?
+  referralToken    String?
+  Game             Game[]
+  ReferralCode     ReferralCode[]
+  Bonus            Bonus[]
+  VideoBonus       VideoBonus[]
+  dailyRewardClaim dailyRewardClaim[]
 }
 
 model Game {
@@ -56,11 +57,45 @@ model Bonus {
   updatedAt DateTime @updatedAt
 }
 
+model video {
+  id          Int          @id @default(autoincrement())
+  video_url   String
+  title       String
+  description String
+  code        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  VideoBonus  VideoBonus[]
+}
+
 model VideoBonus {
   id        Int      @id @default(autoincrement())
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   platform  String
+  videoId   Int
+  video     video    @relation(fields: [videoId], references: [id])
+  claimed   Boolean  @default(false)
   videoType String
   createdAt DateTime @default(now())
+}
+
+model dailyReward {
+  id               Int                @id @default(autoincrement())
+  title            String
+  description      String
+  points           Int                @default(0)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  dailyRewardClaim dailyRewardClaim[]
+}
+
+model dailyRewardClaim {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  user          User        @relation(fields: [userId], references: [id])
+  dailyRewardId Int
+  dailyReward   dailyReward @relation(fields: [dailyRewardId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
