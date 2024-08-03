@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (user) {
-      return NextResponse.json({ userName: user.username, userId: user.id});
+      return NextResponse.json({ userName: user.username, userId: user.id, referralCode: user.referralCode });
     } else {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }

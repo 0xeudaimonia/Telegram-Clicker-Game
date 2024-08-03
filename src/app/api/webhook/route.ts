@@ -1,110 +1,66 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fetch from 'node-fetch';
-import { env } from 'process';
 import { PrismaClient } from '@prisma/client';
+import axios from 'axios';
 
 const prisma = new PrismaClient();
 
-const BOT_TOKEN = env.TELEGRAM_BOT_TOKEN;
-
-type TelegramUpdate = {
-    message?: {
-        text: string;
-        chat: {
-            first_name: string;
-            id: number;
-        };
-    };
-};
-
 export async function POST(req: NextRequest) {
-    if (req.method === 'POST') {
-        const update: TelegramUpdate = await req.json();
-        if (update.message && update.message.text) {
-            const { text, chat } = update.message;
-            const chatId = chat.id;
-            const userName = chat.first_name;
-            
-            // Extract referral token from the message if it exists
-            const referralToken = text.match(/start=r_(\d+)/)?.[1];
-            console.log("referralToken: " + referralToken);
-            
-            // Handle different commands
-            switch (text.trim().toLowerCase()) {
-                case '/start':
-                    await handleStartCommand(chatId, referralToken);
-                    break;
-                case '/about':
-                    await sendAboutMessage(chatId);
-                    break;
-                default:
-                    await sendMessage(chatId, `You said: ${text}`);
-                    break;
-            }
-            
-            const existingUser = await prisma.user.findUnique({
-                where: { telegramId: chatId },
+  try {
+    const body = await req.json();
+    const { message } = body;
+
+    if (message) {
+      const telegramId = message.from.id;
+      const username = `${message.from.first_name} ${message.from.last_name}` || message.from.username;
+      const referralCode = `r_${telegramId}`;
+      const referrerCode = message.text.split(' ')[1]; // Assuming the referral code is sent as part of the message text
+
+      const existingUser = await prisma.user.findUnique({
+        where: { telegramId },
+      });
+
+      if (!existingUser) {
+        const referrer = await prisma.user.findUnique({
+          where: { referralCode: referrerCode },
+        });
+
+        const user = await prisma.user.create({
+          data: {
+            telegramId,
+            username,
+            referralCode,
+            ReferralUser: {
+              create: {
+                referrerId: referrer ? referrer.id : null,
+              },
+            },
+          },
+        });
+
+        // Send a welcome message
+        await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          chat_id: telegramId,
+          text: 'Welcome to our service! Your account has been created.',
+        });
+      } else {
+        const updatedUser = await prisma.user.update({
+            where: { telegramId },
+            data: {
+                username,
+            },
             });
 
-            if (!existingUser) {
-                // If user does not exist, save the message and referral token
-                try {
-                    await prisma.user.create({
-                        data: {
-                            telegramId: chatId,
-                            username: userName,
-                            data: { text },
-                            referralToken: referralToken ?? null, // Save referral token if exists
-                        },
-                    });
-                } catch (error) {
-                    console.error('Error saving message:', error);
-                    return NextResponse.json('Internal Server Error', { status: 500 });
-                }
-            } else {
-                try {
-                    await prisma.user.update({
-                        where: { telegramId: chatId },
-                        data: {
-                            username: userName,
-                            data: { text },
-                        },
-                    });
-                } catch (error) {
-                    console.error('Error updating message:', error);
-                    return NextResponse.json('Internal Server Error', { status: 500 });
-                }
-            }
-        }
-        return NextResponse.json('ok');
-    } else {
-        return NextResponse.json('Method Not Allowed', { status: 405 });
+        // Send a message if user already exists
+        await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          chat_id: telegramId,
+          text: 'You are already registered.',
+        });
+      }
     }
+
+    return NextResponse.json({ status: 'ok' });
+  } catch (error) {
+    console.error('Error handling webhook:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }
-
-const handleStartCommand = async (chatId: number, referralToken?: string) => {
-    let startMessage = 'Welcome to the Bot!\n\nSend /about to learn more about me.';
-    if (referralToken) {
-        startMessage += `\n\nYou were referred by user with token: ${referralToken}`;
-    }
-    await sendMessage(chatId, startMessage);
-};
-
-const sendAboutMessage = async (chatId: number) => {
-    const aboutMessage = 'This bot is created using Next.js and TypeScript.';
-    await sendMessage(chatId, aboutMessage);
-};
-
-const sendMessage = async (chatId: number, text: string) => {
-    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-    await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            chat_id: chatId,
-            text: text,
-        }),
-    });
-};

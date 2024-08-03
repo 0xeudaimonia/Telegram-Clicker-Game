@@ -14,22 +14,14 @@ const inter = Roboto_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 
 function LayoutHome({ children }: LayoutHomeProps) {
   return (
-    <html lang="en">
-      <head>
-        <Script
-          strategy="beforeInteractive"
-          src="https://telegram.org/js/telegram-web-app.js"
-        />
-      </head>
-      <body className={inter.className}>
-        <Navbar />
-        <User />
-        <div className="card border-t-2 p-4 pb-16" id="border-card">
-          {children}
-        </div>
-        <BottomNav />
-      </body>
-    </html>
+    <>
+      <Navbar />
+      <User />
+      <div className="card border-t-2 p-4 pb-16" id="border-card">
+        {children}
+      </div>
+      <BottomNav />
+    </>
   );
 }
 

@@ -1,49 +1,13 @@
-"use client";
-import { useEffect, useState, useCallback } from "react";
+import { useCallback } from "react";
 import Image from "next/image";
 
-const ReferralCode = ({ userId }: { userId: string }) => {
-  const [referralCode, setReferralCode] = useState("");
-  const [copySupported, setCopySupported] = useState(false);
-
-  useEffect(() => {
-    setCopySupported("clipboard" in navigator);
-  }, []);
-
-  useEffect(() => {
-    const fetchReferralCode = async () => {
-      try {
-        const response = await fetch(`/api/referralCode?user_id=${userId}`);
-        const data = await response.json();
-        if (response.ok) {
-          setReferralCode(data.token);
-        } else if (data.error === "Referral code not found") {
-          const postResponse = await fetch("/api/referralCode", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId }),
-          });
-          const newData = await postResponse.json();
-          if (postResponse.ok) {
-            setReferralCode(newData.token);
-          } else {
-            console.error("Error creating referral code:", newData.error);
-          }
-        } else {
-          console.error("Error fetching referral code:", data.error);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
-
-    fetchReferralCode();
-  }, [userId]);
+const ReferralCode = ({ referralCode }: { referralCode: string }) => {
+  const copySupported = !!navigator.clipboard;
 
   const handleCopy = useCallback(() => {
     if (!copySupported) {
       const textArea = document.createElement("textarea");
-      textArea.value = `https://t.me/TeleBotGame_bot/telegramNextjs?start=${referralCode}`;
+      textArea.value = `https://t.me/TeleBotGame_bot?start=${referralCode}`;
       document.body.appendChild(textArea);
       textArea.select();
       document.execCommand("copy");
@@ -51,9 +15,7 @@ const ReferralCode = ({ userId }: { userId: string }) => {
       console.log("Copied to clipboard");
     } else {
       navigator.clipboard
-        .writeText(
-          `https://t.me/TeleBotGame_bot/telegramNextjs?start=${referralCode}`
-        )
+        .writeText(`https://t.me/TeleBotGame_bot?start=${referralCode}`)
         .then(() => {
           console.log("Copied to clipboard");
         })

@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { Roboto_Mono } from "next/font/google";
 import "./globals.css";
-import BottomNav from "./bottomNav";
-import Navbar from "./navbar";
-import User from "@components/User";
+import React from "react";
 import Script from "next/script";
-import { useRouter } from "next/navigation";
-
 const inter = Roboto_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,5 +15,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>{children}</>;
+  return (
+    <html lang="en">
+      <head>
+        <Script
+          strategy="beforeInteractive"
+          src="https://telegram.org/js/telegram-web-app.js"
+        />
+      </head>
+      <body className={inter.className}>{children}</body>
+    </html>
+  );
 }

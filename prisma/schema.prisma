@@ -20,12 +20,14 @@ model User {
   username         String?
   createdAt        DateTime           @default(now())
   data             Json?
+  referralCode     String             @unique
   referralToken    String?
   Game             Game[]
   ReferralCode     ReferralCode[]
   Bonus            Bonus[]
   VideoBonus       VideoBonus[]
   dailyRewardClaim dailyRewardClaim[]
+  ReferralUser     ReferralUser[]
 }
 
 model Game {
@@ -46,6 +48,14 @@ model ReferralCode {
   token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ReferralUser {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @unique
+  referrerId Int?
+  createdAt  DateTime @default(now())
+  User       User     @relation(fields: [userId], references: [id])
 }
 
 model Bonus {
