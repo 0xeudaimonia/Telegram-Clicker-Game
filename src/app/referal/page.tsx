@@ -21,49 +21,47 @@ const cardListData = [
   },
 ];
 
-const tabelListData = [
-  {
-    name: "Прораб",
-    pointFromFriend: "307 582",
-    pointPremium: "615 165",
-    imageSrc: "/avatar.jpeg",
-  },
-  {
-    name: "Прораб",
-    pointFromFriend: "307 582",
-    pointPremium: "615 165",
-    imageSrc: "/avatar.jpeg",
-  },
-  {
-    name: "Прораб",
-    pointFromFriend: "307 582",
-    pointPremium: "615 165",
-    imageSrc: "/avatar.jpeg",
-  },
-  {
-    name: "Прораб",
-    pointFromFriend: "307 582",
-    pointPremium: "615 165",
-    imageSrc: "/avatar.jpeg",
-  },
-  {
-    name: "Прораб",
-    pointFromFriend: "307 582",
-    pointPremium: "615 165",
-    imageSrc: "/avatar.jpeg",
-  },
-];
+// const tabelListData = [
+//   {
+//     name: "Прораб",
+//     pointFromFriend: "307 582",
+//     pointPremium: "615 165",
+//     imageSrc: "/avatar.jpeg",
+//   },
+//   {
+//     name: "Прораб",
+//     pointFromFriend: "307 582",
+//     pointPremium: "615 165",
+//     imageSrc: "/avatar.jpeg",
+//   },
+//   {
+//     name: "Прораб",
+//     pointFromFriend: "307 582",
+//     pointPremium: "615 165",
+//     imageSrc: "/avatar.jpeg",
+//   },
+//   {
+//     name: "Прораб",
+//     pointFromFriend: "307 582",
+//     pointPremium: "615 165",
+//     imageSrc: "/avatar.jpeg",
+//   },
+//   {
+//     name: "Прораб",
+//     pointFromFriend: "307 582",
+//     pointPremium: "615 165",
+//     imageSrc: "/avatar.jpeg",
+//   },
+// ];
 
 interface UserData {
   id: number;
-  firstName: string;
-  lastName: string;
-  Username: string;
-  languageCode: string;
+  username: string;
 }
 
 export default function ReferalPage() {
-  const [tgUserId, setTgUserId] = useState<string>("");
+  const [referralCode, setreferralCode] = useState<string>("");
+  const [referralUsers, setReferralUsers] = useState<UserData[]>([]);
 
   const userId = user?.id;
 
@@ -76,7 +74,21 @@ export default function ReferalPage() {
           );
           if (response.ok) {
             const data = await response.json();
-            setTgUserId(data.userId || "Guest");
+            setreferralCode(data.referralCode || "");
+
+            // Fetch referral users
+            const referralResponse = await fetch(
+              `/api/referral-users?userId=${data.userId}`
+            );
+            if (referralResponse.ok) {
+              const referralData = await referralResponse.json();
+              setReferralUsers(referralData.referralUsers || []);
+            } else {
+              console.error(
+                "Error fetching referral users:",
+                referralResponse.statusText
+              );
+            }
           } else {
             const errorData = await response.json();
             console.error("Error fetching user name:", errorData.error);
@@ -102,9 +114,16 @@ export default function ReferalPage() {
         <CardList data={cardListData} />
 
         <h5 className="text-center">Бонус за повышение уровня</h5>
-        <TabelList data={tabelListData} />
+        <TabelList
+          data={referralUsers.map((user) => ({
+            name: user.username,
+            pointFromFriend: "0", // Placeholder data, update with actual points if available
+            pointPremium: "0", // Placeholder data, update with actual points if available
+            imageSrc: "/avatar.jpeg",
+          }))}
+        />
 
-        <CopyToClipboard userId={tgUserId} />
+        <CopyToClipboard referralCode={referralCode} />
       </div>
     </LayoutHome>
   );

@@ -11,14 +11,12 @@ const inter = Roboto_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 
 function LayoutAdmin({ children }: LayoutAdminProps) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        {/* <Navbar /> */}
-        {/* <User /> */}
-        <div className="">{children}</div>
-        {/* <BottomNav /> */}
-      </body>
-    </html>
+    <>
+      {/* <Navbar /> */}
+      {/* <User /> */}
+      <div className="">{children}</div>
+      {/* <BottomNav /> */}
+    </>
   );
 }
 
