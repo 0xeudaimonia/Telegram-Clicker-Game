@@ -39,6 +39,15 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 Check out this reference [Prisma Setup](https://www.digitalocean.com/community/tutorials/how-to-build-a-rest-api-with-prisma-and-postgresql).
 
 ## WebHook set up
-`curl -F "url=<https://yourdomain.com/your-webhook-path>" <https://api.telegram.org/bot><YourBotToken>/setWebhook`
+`curl -F "url=YOUR-MINI-APP_URL/api/webhook" https://api.telegram.org/botYOUR-BOT-TOKEN/setWebhook`
+
+`https://api.telegram.org/botYOUR-BOT-TOKEN/setWebhook?url=YOUR-MINI-APP-URL/api/webhook`
+
+## GetHook set up
+`https://api.telegram.org/botYOUR-BOT-TOKEN/getWebhookInfo`
+
+`https://api.telegram.org/botYOUR-BOT-TOKEN/getMe`
+
+Setting Webhook Reference Url [SetWebHook](https://stackoverflow.com/questions/42554548/how-to-set-telegram-bot-webhook)
 
 # telegram-bot-game
