@@ -35,6 +35,9 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
+## Prisma Migrate
+Check out this reference [Prisma Setup](https://www.digitalocean.com/community/tutorials/how-to-build-a-rest-api-with-prisma-and-postgresql).
+
 ## WebHook set up
 `curl -F "url=<https://yourdomain.com/your-webhook-path>" <https://api.telegram.org/bot><YourBotToken>/setWebhook`
 
