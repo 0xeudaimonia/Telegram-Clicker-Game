@@ -91,21 +91,20 @@ model VideoBonus {
 }
 
 model dailyReward {
-  id               Int                @id @default(autoincrement())
-  title            String
-  description      String
-  points           Int                @default(0)
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  dailyRewardClaim dailyRewardClaim[]
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  points      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model dailyRewardClaim {
-  id            Int         @id @default(autoincrement())
-  userId        Int
-  user          User        @relation(fields: [userId], references: [id])
-  dailyRewardId Int
-  dailyReward   dailyReward @relation(fields: [dailyRewardId], references: [id])
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  day       Int
+  points    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

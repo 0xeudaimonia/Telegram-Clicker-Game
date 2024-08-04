@@ -1,44 +1,101 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Image from "next/image";
-import CardList from "./cardList";
+import cardData from "@data/cardData.json";
+import teamData from "@data/teamData.json";
 import LayoutHome from "@/components/layouts/index";
+import CardComponent from "@components/Card";
+import Clock from "@app/clock";
+import TeamList from "@app/tenders/teamCardList";
+import RWA from "@app/tenders/rwa";
+import Marketing from "@app/tenders/marketing";
 
-const cardListData = [
-  {
-    title: "Новое видео",
-    point: "100 000",
-    imageSrc: "/tendersTask_icon.svg",
-  },
-  {
-    title: "Ежедневная награда",
-    point: "100 000",
-    imageSrc: "/tendersTask_icon.svg",
-  },
-];
+const blocks: string[] = ["RWA", "Build", "Finance", "Marketing"];
+
 export default function TendersPage() {
+  const [activeBlock, setActiveBlock] = useState<string>("RWA");
+
+  const renderBottomData = () => {
+    switch (activeBlock) {
+      case "Build":
+        return <div>Build Data</div>;
+      case "Finance":
+        return <div>Finance Data</div>;
+      case "Marketing":
+        return <Marketing />;
+      default:
+        return <RWA />;
+    }
+  };
+
   return (
     <LayoutHome>
+      <div className="flex justify-center items-center gap-3 text-center text-white">
+        {cardData.map((card) => (
+          <CardComponent
+            key={card.id}
+            title={card.title}
+            titleColor={card.titleColor}
+            value={card.value}
+            iconSrc={card.iconSrc}
+            additionalIconSrc={card.additionalIconSrc}
+          />
+        ))}
+      </div>
       <div className="text-white pb-10">
-        {/* box-shadow: 0px 32px 128px 0px #0040A1; */}
+        <div className="text-center">
+          <Image
+            src="/coin_150.svg"
+            width={50}
+            height={50}
+            alt="Tenders"
+            className="mb-3 mr-7"
+            style={{
+              boxShadow: "0px 32px 128px 0px rgba(0, 64, 161, 1)",
+              backgroundColor: "transparent",
+              display: "inline",
+            }}
+          />
+          <h2 style={{ display: "inline" }}>
+            {cardData[0].value.replace("+", "")}
+          </h2>
+        </div>
 
-        <Image
-          src="/coin_150.svg"
-          width={100}
-          height={100}
-          alt="Tenders"
-          className="mx-auto mb-4"
-          style={{
-            boxShadow: "0px 32px 128px 0px rgba(0, 64, 161, 1)",
-            backgroundColor: "transparent",
-          }}
-        />
-        <h1 className="text-center mb-3">Заработай больше монет</h1>
-        <p className="text-center font-bold">Заработай больше монет</p>
+        <Clock classname="flex justify-end mb-2" />
 
-        <CardList data={cardListData} />
+        <div className="flex justify-between mx-0.5 bg-stone-800 rounded-md px-2.5 py-2">
+          <span className="my-auto">Комбо</span>
+          <div className="flex items-center bg-black rounded-md px-3.5 py-1.5">
+            <Image src="/uparrowicon.png" className="h-4 " alt="uparrow" />
+            <span>+5 000 000</span>
+            <Image src="./greentick.png" className="h-4" alt="greentick" />
+          </div>
+        </div>
 
-        <p className="text-center font-bold mb-1">Ежедневные задания</p>
-        <CardList data={cardListData} />
+        <div className="flex justify-center items-center gap-3 text-center text-white">
+          {teamData.map((team) => (
+            <TeamList
+              key={team.title}
+              data={[{ title: team.title, imageSrc: team.imageSrc }]}
+            />
+          ))}
+        </div>
+
+        <div className="flex justify-between mx-0.5 bg-stone-800 rounded-md px-2.5 py-2 text-xs">
+          {blocks.map((block) => (
+            <div
+              key={block}
+              className={`px-4 py-1 cursor-pointer text-white rounded ${
+                activeBlock === block ? "bg-black" : "bg-stone-800"
+              }`}
+              onClick={() => setActiveBlock(block)}
+            >
+              {block}
+            </div>
+          ))}
+        </div>
+
+        <div className="text-white pt-4">{renderBottomData()}</div>
       </div>
     </LayoutHome>
   );

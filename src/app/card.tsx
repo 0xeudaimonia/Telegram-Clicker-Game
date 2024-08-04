@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Button from "@components/Button";
 import CardComponent from "@components/Card";
+import cardData from "@data/cardData.json"
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { getUserData } from "@/utils/webAppUtils";
@@ -13,29 +14,7 @@ const GameCanvas = dynamic(() => import("../components/GameCanvas"), {
 });
 
 export default function Card() {
-  const cardData = [
-    {
-      id: 1,
-      title: "Floors built",
-      titleColor: "text-[#2496FF]",
-      value: "+513",
-      iconSrc: "/coin.svg",
-    },
-    {
-      id: 2,
-      title: "Floors to update",
-      titleColor: "text-[#FABB1E]",
-      value: "+513",
-    },
-    {
-      id: 3,
-      title: "Rent in hour",
-      titleColor: "text-[#0FD73B]",
-      value: "+513",
-      iconSrc: "/coin.svg",
-      additionalIconSrc: "/i_icon.svg",
-    },
-  ];
+  
 
   const [tgUserId, setTgUserId] = useState<string>("");
 

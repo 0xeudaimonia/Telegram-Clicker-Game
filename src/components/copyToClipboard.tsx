@@ -1,8 +1,14 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 
 const ReferralCode = ({ referralCode }: { referralCode: string }) => {
-  const copySupported = !!navigator.clipboard;
+  const [copySupported, setCopySupported] = useState(false);
+
+  useEffect(() => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      setCopySupported(true);
+    }
+  }, []);
 
   const handleCopy = useCallback(() => {
     if (!copySupported) {
