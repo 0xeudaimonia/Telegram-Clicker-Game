@@ -13,16 +13,28 @@ export async function POST(req: NextRequest) {
       const telegramId = Number(message.from.id);
       const username = `${message.from.first_name} ${message.from.last_name}` || message.from.username;
       const referralCode = `r_${telegramId}`;
-      const referrerCode = message.text.split(' ')[1]; // Assuming the referral code is sent as part of the message text
+      let referrerCode;
+
+      if (message.text) {
+        const messageParts = message.text.split(' ');
+        if (messageParts.length > 1) {
+          referrerCode = messageParts[1];
+        }
+      }
 
       const existingUser = await prisma.user.findUnique({
-        where: { telegramId },
+        where: { 
+          telegramId: telegramId
+        },
       });
 
       if (!existingUser) {
-        const referrer = await prisma.user.findUnique({
-          where: { referralCode: referrerCode },
-        });
+        let referrer = null;
+        if (referrerCode) {
+          referrer = await prisma.user.findUnique({
+            where: { referralCode: referrerCode },
+          });
+        }
 
         const user = await prisma.user.create({
           data: {
@@ -44,11 +56,11 @@ export async function POST(req: NextRequest) {
         });
       } else {
         const updatedUser = await prisma.user.update({
-            where: { telegramId },
-            data: {
-                username,
-            },
-            });
+          where: { telegramId },
+          data: {
+            username,
+          },
+        });
 
         // Send a message if user already exists
         await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
