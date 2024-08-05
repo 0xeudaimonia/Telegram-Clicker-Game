@@ -51,3 +51,10 @@ Check out this reference [Prisma Setup](https://www.digitalocean.com/community/t
 Setting Webhook Reference Url [SetWebHook](https://stackoverflow.com/questions/42554548/how-to-set-telegram-bot-webhook)
 
 # telegram-bot-game
+
+## run as service
+```
+pm2 start "npm start" --name "telegram-mini-app"
+pm2 startup
+pm2 save
+```
