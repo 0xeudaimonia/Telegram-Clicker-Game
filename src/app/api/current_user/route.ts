@@ -12,16 +12,10 @@ export async function GET(req: NextRequest) {
 
   try {
     const referralCode = `r_${telegramUserId}`
-    const user = await prisma.user.upsert({
-      where: { telegramId: telegramUserId },
-      create: {
-        referralCode,
+    const user = await prisma.user.findUnique({
+      where: {
         telegramId: telegramUserId
       },
-      update: {
-        referralCode,
-        telegramId: telegramUserId
-      }
     });
 
     if (user) {
