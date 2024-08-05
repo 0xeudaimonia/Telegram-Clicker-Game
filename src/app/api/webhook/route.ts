@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const { message } = body;
 
     if (message) {
-      const telegramId = message.from.id;
+      const telegramId = String(message.from.id);
       const username = `${message.from.first_name} ${message.from.last_name}` || message.from.username;
       const referralCode = `r_${telegramId}`;
       let referrerCode;
