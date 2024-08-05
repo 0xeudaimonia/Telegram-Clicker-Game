@@ -5,14 +5,23 @@ const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const telegramUserId = req.nextUrl.searchParams.get('telegramUserId');
-  
+
   if (!telegramUserId) {
     return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
   }
 
   try {
-    const user = await prisma.user.findUnique({
+    const referralCode = `r_${telegramUserId}`
+    const user = await prisma.user.upsert({
       where: { telegramId: telegramUserId },
+      create: {
+        referralCode,
+        telegramId: telegramUserId
+      },
+      update: {
+        referralCode,
+        telegramId: telegramUserId
+      }
     });
 
     if (user) {
