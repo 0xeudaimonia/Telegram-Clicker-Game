@@ -1,0 +1,23 @@
+ [
+    {
+      "id": 1,
+      "title": "Floors built",
+      "titleColor": "text-[#2496FF]",
+      "value": "+513",
+      "iconSrc": "/coin.svg"
+    },
+    {
+      "id": 2,
+      "title": "Floors to update",
+      "titleColor": "text-[#FABB1E]",
+      "value": "+513"
+    },
+    {
+      "id": 3,
+      "title": "Rent in hour",
+      "titleColor": "text-[#0FD73B]",
+      "value": "+513",
+      "iconSrc": "/coin.svg",
+      "additionalIconSrc": "/i_icon.svg"
+    }
+  ]

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getBoosterReward, calculateSpeedIncrease } from "../utils/gameLogic";
 import useBlock from "./Block";
 import useTower from "./Tower";
@@ -43,31 +43,6 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
     }
   };
 
-  useEffect(() => {
-    const fetchUserId = async () => {
-      if (userId) {
-        try {
-          const response = await fetch(
-            `/api/current_user?telegramUserId=${userId}`
-          );
-          if (response.ok) {
-            const data = await response.json();
-            setTgUserId(data.userId || "Guest");
-          } else {
-            const errorData = await response.json();
-            console.error("Error fetching user name:", errorData.error);
-          }
-        } catch (error) {
-          console.error("Error fetching user name:", error);
-        }
-      } else {
-        console.warn("User ID is not set.");
-      }
-    };
-
-    fetchUserId();
-  }, [userId]);
-
   const saveScore = async (score: number, level: number, points: number) => {
     try {
       const response = await fetch("/api/saveScore", {
@@ -76,7 +51,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: tgUserId,
+          userId: userId,
           score,
           level,
           points: points,
@@ -189,6 +164,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [block, tower, gameState, score, boosterLevel, points, backgroundY]);
 
   return (

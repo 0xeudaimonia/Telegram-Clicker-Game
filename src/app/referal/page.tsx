@@ -74,6 +74,7 @@ export default function ReferalPage() {
           );
           if (response.ok) {
             const data = await response.json();
+            console.log("User data:", data);
             setreferralCode(data.referralCode || "");
 
             // Fetch referral users
