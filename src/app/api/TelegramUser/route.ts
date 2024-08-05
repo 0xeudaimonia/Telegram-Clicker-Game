@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const user = await prisma.user.findUnique({
-      where: { telegramId: Number(chatId) },
+      where: { telegramId: chatId },
     });
 
     if (user) {
