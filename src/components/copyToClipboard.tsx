@@ -13,7 +13,7 @@ const ReferralCode = ({ referralCode }: { referralCode: string }) => {
   const handleCopy = useCallback(() => {
     if (!copySupported) {
       const textArea = document.createElement("textarea");
-      textArea.value = `https://t.me/TeleBotGame_bot?start=${referralCode}`;
+      textArea.value = `${process.env.NEXT_PUBLIC_TELGRAM_BOT_LINK}?start=${referralCode}`;
       document.body.appendChild(textArea);
       textArea.select();
       document.execCommand("copy");
@@ -21,7 +21,7 @@ const ReferralCode = ({ referralCode }: { referralCode: string }) => {
       console.log("Copied to clipboard");
     } else {
       navigator.clipboard
-        .writeText(`https://t.me/TeleBotGame_bot?start=${referralCode}`)
+        .writeText(`${process.env.NEXT_PUBLIC_TELGRAM_BOT_LINK}?start=${referralCode}`)
         .then(() => {
           console.log("Copied to clipboard");
         })
