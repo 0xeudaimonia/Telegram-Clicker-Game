@@ -1,10 +1,17 @@
 import LayoutAdmin from "@/components/layouts/admin";
+import Link from "next/link";
 
 const Dashboard = () => {
   return (
     <LayoutAdmin>
       <div className="max-w-[450px] mx-auto py-10">
-        <div className="border border-[#fff] p-[10px]">
+      <Link href="/admin/users">
+        <button type="button" className="border-2 bg-red-500 px-5 mx-2">
+          User Details
+        </button>
+          </Link>
+      </div>
+      {/* <div className="border border-[#fff] p-[10px]">
           <form>
             <div>
               <label className="form-control w-full ">
@@ -58,10 +65,11 @@ const Dashboard = () => {
               <button className="btn">Button</button>
             </div>
           </form>
-        </div>
-      </div>
+        </div> */}
     </LayoutAdmin>
   );
 };
 
 export default Dashboard;
+
+ 

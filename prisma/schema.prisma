@@ -14,6 +14,14 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
+model AdminUser {
+  id               Int                @id @default(autoincrement())
+  username         String?
+  email            String?            @unique
+  password         String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+}
 model User {
   id               Int                @id @default(autoincrement())
   telegramId       String             @unique
