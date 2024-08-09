@@ -6,6 +6,7 @@ import cardData from "@data/cardData.json"
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { getUserData } from "@/utils/webAppUtils";
+import { useAppProvider } from "@components/layouts/AppProvider";
 
 const user = getUserData();
 
@@ -15,7 +16,7 @@ const GameCanvas = dynamic(() => import("../components/GameCanvas"), {
 
 export default function Card() {
   
-
+  const { userPoints, setUserPoints } = useAppProvider();
   const [tgUserId, setTgUserId] = useState<string>("");
 
   const userId = user?.id;
@@ -41,7 +42,7 @@ export default function Card() {
     fetchUserId();
   }, [userId]);
 
-  const [points, setPoints] = useState<number | null>(null);
+  // const [points, setPoints] = useState<number | null>(null);
 
   useEffect(() => {
     if (tgUserId) {
@@ -59,18 +60,19 @@ export default function Card() {
           }
 
           const data = await response.json();
-          setPoints(data.points);
+          // setPoints(data.points);
+          const formattedPoints = data.points ? data.points : 0;
+          setUserPoints(formattedPoints);
         } catch (error) {
           console.error("Error fetching game points:", error);
-          setPoints(0);
+          // setPoints(0);
+          setUserPoints(0);
         }
       };
 
       fetchPoints();
     }
   }, [tgUserId]);
-
-  const formattedPoints = points !== null ? points : "0";
 
   return (
     <>
@@ -88,7 +90,7 @@ export default function Card() {
       </div>
       <div className="flex justify-center items-center gap-3 my-5">
         <Image src="/coin_60.svg" alt="building" width={60} height={60} />
-        <h2 className="">{formattedPoints}</h2>
+        <h2 className="">{userPoints}</h2>
       </div>
       <div>
         <GameCanvas userId={tgUserId} />

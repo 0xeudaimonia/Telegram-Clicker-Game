@@ -75,6 +75,15 @@ model Bonus {
   updatedAt DateTime @updatedAt
 }
 
+model BonusSeting {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  points      Int    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model video {
   id          Int          @id @default(autoincrement())
   video_url   String

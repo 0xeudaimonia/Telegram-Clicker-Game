@@ -86,6 +86,8 @@ const Catagory1: React.FC = () => {
               <Image
                 src="/uparrowicon.png"
                 alt="arrow"
+                width={16}
+                height={16}
                 className="mb-1.5 mt-1 mx-1"
               />{" "}
               {item.amount}
@@ -94,7 +96,13 @@ const Catagory1: React.FC = () => {
             <div className="flex px-1 justify-start items-start w-full text-xs pb-2 ">
               <h5>{item.level}</h5>
               <span className="w-0.5 h-5 mx-2 my-1 bg-black"></span>
-              <Image src="/uparrowicon.png" alt="arrow" className="my-2 mr-1" />
+              <Image
+                src="/uparrowicon.png"
+                alt="arrow"
+                width={16}
+                height={16}
+                className="my-2 mr-1"
+              />
               <p className="mt-1.5 mb-0 text-xs ">{item.amount}</p>
             </div>
           </div>
@@ -123,9 +131,8 @@ const Marketing: React.FC = () => {
         {blocks.map((item, index) => (
           <a
             key={index}
-            className={`w-1/3 border-b-2 pb-1 ${
-              catagory === item ? `border-blue-800` : `border-stone-800`
-            }`}
+            className={`w-1/3 border-b-2 pb-1 ${catagory === item ? `border-blue-800` : `border-stone-800`
+              }`}
             onClick={() => setcatagory(item)}
           >
             {item}

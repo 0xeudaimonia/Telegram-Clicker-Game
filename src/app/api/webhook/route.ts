@@ -9,9 +9,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { message } = body;
 
+    console.log("message", message);
+
     if (message) {
       const telegramId = String(message.from.id);
-      const username = `${message.from.first_name} ${message.from.last_name}` || message.from.username;
+      const username = `${message.from.first_name ? message.from.first_name : ''} ${message.from.last_name ? message.from.last_name : ''}` || message.from.username;
       const referralCode = `r_${telegramId}`;
       let referrerCode;
 
@@ -34,6 +36,42 @@ export async function POST(req: NextRequest) {
           referrer = await prisma.user.findUnique({
             where: { referralCode: referrerCode },
           });
+
+          if (referrer) {
+            const invite_record = await prisma.bonusSeting.findFirst({
+              where: { title: "invite_friend" },
+            });
+
+            console.log("invite record", invite_record);
+
+            let invite_points = invite_record?.points ? invite_record?.points : 0;
+
+            const referrrerScore = await prisma.game.findFirst({
+              where: { userId: referrer.id }
+            });
+
+            console.log("referrrerScore", referrrerScore);
+            let result;
+            if (referrrerScore) {
+              let refferal_points = referrrerScore?.points ? referrrerScore?.points : 0;
+
+              result = await prisma.game.update({
+                where: { id: referrrerScore.id },
+                data: {
+                  points: refferal_points + invite_points
+                },
+              });
+            } else {
+              result = await prisma.game.create({
+                data: {
+                  userId: referrer.id,
+                  score: 0,
+                  level: 1,
+                  points: invite_points,
+                },
+              });
+            }
+          }          
         }
 
         const user = await prisma.user.create({

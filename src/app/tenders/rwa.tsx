@@ -9,28 +9,28 @@ interface DataType {
 }
 const data: DataType[] = [
   {
-    image: "./greenblock.png",
+    image: "/greenblock.png",
     title: "Name",
     level: "12",
     amount: "513 000",
     exchange: "513 000",
   },
   {
-    image: "./greenblock.png",
+    image: "/greenblock.png",
     title: "Name",
     level: "12",
     amount: "513 000",
     exchange: "513 000",
   },
   {
-    image: "./greenblock.png",
+    image: "/greenblock.png",
     title: "Name",
     level: "12",
     amount: "513 000",
     exchange: "513 000",
   },
   {
-    image: "./greenblock.png",
+    image: "/greenblock.png",
     title: "Name",
     level: "12",
     amount: "513 000",
@@ -66,6 +66,8 @@ const RWA: React.FC = () => {
                 <Image
                   src="/uparrowicon.png"
                   alt="arrow"
+                  width={16}
+                  height={16}
                   className="h-3 mt-0.5 mr-1"
                 />
                 <span className="text-xs">{item.exchange}</span>
@@ -80,6 +82,8 @@ const RWA: React.FC = () => {
               <Image
                 src="/uparrowicon.png"
                 alt="arrow"
+                width={16}
+                height={16}
                 className="h-3 mt-2.5 mr-1"
               />
               <span className="text-xs pt-2">{item.amount}</span>
