@@ -3,6 +3,7 @@ import { Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import React from "react";
 import Script from "next/script";
+import AppProvider from "@components/layouts/AppProvider";
 const inter = Roboto_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -23,7 +24,11 @@ export default function RootLayout({
           src="https://telegram.org/js/telegram-web-app.js"
         />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <AppProvider>
+          {children}
+        </AppProvider>
+      </body>
     </html>
   );
 }

@@ -9,11 +9,13 @@ import Clock from "@app/clock";
 import TeamList from "@app/tenders/teamCardList";
 import RWA from "@app/tenders/rwa";
 import Marketing from "@app/tenders/marketing";
+import { useAppProvider } from "@components/layouts/AppProvider";
 
 const blocks: string[] = ["RWA", "Build", "Finance", "Marketing"];
 
 export default function TendersPage() {
   const [activeBlock, setActiveBlock] = useState<string>("RWA");
+  const { userPoints, setUserPoints } = useAppProvider();
 
   const renderBottomData = () => {
     switch (activeBlock) {
@@ -57,7 +59,7 @@ export default function TendersPage() {
             }}
           />
           <h2 style={{ display: "inline" }}>
-            {cardData[0].value.replace("+", "")}
+            {userPoints}
           </h2>
         </div>
 
@@ -66,9 +68,15 @@ export default function TendersPage() {
         <div className="flex justify-between mx-0.5 bg-stone-800 rounded-md px-2.5 py-2">
           <span className="my-auto">Комбо</span>
           <div className="flex items-center bg-black rounded-md px-3.5 py-1.5">
-            <Image src="/uparrowicon.png" className="h-4 " alt="uparrow" />
+            <Image
+              src="/uparrowicon.png"
+              width={16}
+              height={16}
+              className="h-4"
+              alt="uparrow"
+            />
             <span>+5 000 000</span>
-            <Image src="./greentick.png" className="h-4" alt="greentick" />
+            <Image src="/greentick.png" className="h-4" width={16} height={16} alt="greentick" />
           </div>
         </div>
 
@@ -85,9 +93,8 @@ export default function TendersPage() {
           {blocks.map((block) => (
             <div
               key={block}
-              className={`px-4 py-1 cursor-pointer text-white rounded ${
-                activeBlock === block ? "bg-black" : "bg-stone-800"
-              }`}
+              className={`px-4 py-1 cursor-pointer text-white rounded ${activeBlock === block ? "bg-black" : "bg-stone-800"
+                }`}
               onClick={() => setActiveBlock(block)}
             >
               {block}

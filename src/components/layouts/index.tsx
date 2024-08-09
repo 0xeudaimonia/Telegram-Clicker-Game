@@ -15,7 +15,7 @@ const inter = Roboto_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 function LayoutHome({ children }: LayoutHomeProps) {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <User />
       <div className="card border-t-2 p-4 pb-16" id="border-card">
         {children}
