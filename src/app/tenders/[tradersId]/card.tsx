@@ -4,11 +4,11 @@ import Image from "next/image";
 interface CardListProps {
   data: {
     id: number;
-    title: string;
-    description: string;
     points: number;
     createdAt: string;
     updatedAt: string;
+    data: string;
+    type: number;
   }[];
 }
 
@@ -20,7 +20,7 @@ const Card = ({ data }: CardListProps) => {
           className="card border px-3 py-1 text-center tender_cards"
           key={item.id}
         >
-          <h5 className="capitalize">{item.title}</h5>
+          <h5 className="capitalize">{item.data}</h5>
           <Image
             src="/coin.svg"
             alt="coin"
