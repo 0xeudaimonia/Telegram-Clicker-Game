@@ -15,113 +15,74 @@ datasource db {
 }
 
 model AdminUser {
-  id               Int                @id @default(autoincrement())
-  username         String?
-  email            String?            @unique
-  password         String?
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  id              Int           @id @default(autoincrement())
+  username        String?
+  email           String?       @unique
+  password        String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
+
 model User {
-  id               Int                @id @default(autoincrement())
-  telegramId       String             @unique
-  username         String?
-  createdAt        DateTime           @default(now())
-  data             Json?
-  referralCode     String             @unique
-  referralToken    String?
-  Game             Game[]
-  ReferralCode     ReferralCode[]
-  Bonus            Bonus[]
-  VideoBonus       VideoBonus[]
-  dailyRewardClaim dailyRewardClaim[]
-  ReferralUser     ReferralUser[]
+  id              Int           @id @default(autoincrement())
+  telegramId      String        @unique
+  username        String?
+  createdAt       DateTime      @default(now())
+  data            Json?
+  referralCode    String        @unique
+  referralToken   String?
+  Game            Game[]
+  BonusHistory    BonusHistory[]
+  ReferralUser    ReferralUser[]
 }
 
 model Game {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  score     Int      @default(0)
-  level     Int      @default(1)
-  points    Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model ReferralCode {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  token     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              Int           @id @default(autoincrement())
+  userId          Int
+  user            User          @relation(fields: [userId], references: [id])
+  score           Int           @default(0)
+  level           Int           @default(1)
+  points          Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model ReferralUser {
-  id         Int      @id @default(autoincrement())
-  userId     Int      @unique
-  referrerId Int?
-  createdAt  DateTime @default(now())
-  User       User     @relation(fields: [userId], references: [id])
+  id              Int           @id @default(autoincrement())
+  userId          Int           @unique
+  referrerId      Int?
+  createdAt       DateTime      @default(now())
+  User            User          @relation(fields: [userId], references: [id])
 }
 
-model Bonus {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  score     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model BonusHistory {
+  id              Int           @id @default(autoincrement())
+  type            Int
+  bonusType       BonusType     @relation(fields: [type], references: [id])
+  userId          Int
+  user            User          @relation(fields: [userId], references: [id])
+  from            String
+  rewards         Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model BonusType {
+  id              Int           @id @default(autoincrement())
+  title           String
+  description     String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  bonusSettings   BonusSeting[]
+  bonusHistory    BonusHistory[]
 }
 
 model BonusSeting {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  points      Int    @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model video {
-  id          Int          @id @default(autoincrement())
-  video_url   String
-  title       String
-  description String
-  code        String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  VideoBonus  VideoBonus[]
-}
-
-model VideoBonus {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  platform  String
-  videoId   Int
-  video     video    @relation(fields: [videoId], references: [id])
-  claimed   Boolean  @default(false)
-  videoType String
-  createdAt DateTime @default(now())
-}
-
-model dailyReward {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  points      Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model dailyRewardClaim {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
-  day       Int
-  points    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              Int           @id @default(autoincrement())
+  type            Int
+  bonusType       BonusType     @relation(fields: [type], references: [id])
+  data            String
+  points          Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }

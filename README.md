@@ -58,3 +58,7 @@ pm2 start "npm start" --name "telegram-mini-app"
 pm2 startup
 pm2 save
 ```
+
+# Telegram Bot API Test
+
+You can test the bot api [Bot Api](https://josxa.stoplight.io/docs/bot-api/YXBpOjY4Njcz-telegram-bot-api)

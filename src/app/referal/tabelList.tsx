@@ -18,9 +18,7 @@ export const TabelList: React.FC<TabelListProps> = ({ data }) => {
         <p className="text-[10px] m-0">For friend</p>
         <p className="text-[10px] m-0">Premium</p>
       </div>
-      {data.length === 0 ? (
-        <p>No data found</p>
-      ) : (
+      {
         data.map((item, index) => (
           <div
             key={index}
@@ -47,7 +45,7 @@ export const TabelList: React.FC<TabelListProps> = ({ data }) => {
               </p>
             </div>
           </div>
-        ))
+        )
       )}
     </div>
   );

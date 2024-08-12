@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Button from "@/components/Button";
-import LayoutHome from "@/components/layouts/index";
 
 const Page = () => {
   const [quantity, setQuantity] = useState(1);
@@ -22,7 +21,7 @@ const Page = () => {
   const totalAmount = quantity * costPerUnit;
 
   return (
-    <LayoutHome>
+    <>
       <div className="text-white pb-10">
         <Image
           src={"/nftpage.png"}
@@ -55,7 +54,7 @@ const Page = () => {
           label="Buy NFT"
         />
       </div>
-    </LayoutHome>
+    </>
   );
 };
 

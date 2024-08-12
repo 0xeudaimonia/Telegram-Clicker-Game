@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import getUserAvatar from "@utils/getUserAvatar";
 
 const prisma = new PrismaClient();
 
@@ -19,7 +20,10 @@ export async function GET(req: NextRequest) {
     });
 
     if (user) {
-      return NextResponse.json({ userName: user.username, userId: user.id, referralCode: user.referralCode });
+
+      const avataInfo = await getUserAvatar(telegramUserId);
+
+      return NextResponse.json({ userName: user.username, userId: user.id, referralCode: user.referralCode, avatar: avataInfo.url });
     } else {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }

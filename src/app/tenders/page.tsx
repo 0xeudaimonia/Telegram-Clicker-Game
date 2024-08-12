@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import cardData from "@data/cardData.json";
 import teamData from "@data/teamData.json";
-import LayoutHome from "@/components/layouts/index";
 import CardComponent from "@components/Card";
 import Clock from "@app/clock";
 import TeamList from "@app/tenders/teamCardList";
@@ -31,7 +30,7 @@ export default function TendersPage() {
   };
 
   return (
-    <LayoutHome>
+    <>
       <div className="flex justify-center items-center gap-3 text-center text-white">
         {cardData.map((card) => (
           <CardComponent
@@ -104,6 +103,6 @@ export default function TendersPage() {
 
         <div className="text-white pt-4">{renderBottomData()}</div>
       </div>
-    </LayoutHome>
+    </>
   );
 }

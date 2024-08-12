@@ -2,7 +2,6 @@
 import Card from "./card";
 import Image from "next/image";
 import Button from "@components/Button";
-import LayoutHome from "@components/layouts";
 import React, { useEffect, useState } from "react";
 
 const TradersIdPage = () => {
@@ -23,7 +22,7 @@ const TradersIdPage = () => {
   }, []);
 
   return (
-    <LayoutHome>
+    <>
       <div className="text-white bg-[url(/background2.png)] pb-20">
         <div className="text-center">
           <Image
@@ -53,7 +52,7 @@ const TradersIdPage = () => {
           className="btn mt-16 text-base bg-[url(/bgButton.png)] bg-cover bg-center bg-no-repeat btn-primary text-white w-full"
         />
       </div>
-    </LayoutHome>
+    </>
   );
 };
 
