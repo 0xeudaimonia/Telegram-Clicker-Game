@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Carousel from "../../components/Carousel";
 import Cardlist from "../../components/CardList";
@@ -54,35 +54,59 @@ const carouselData = [
   },
 ];
 
-const cardListData = [
-  {
-    title: "Gleb Vashkevich",
-    points: "564 216",
-    imageSrc: "/avatar.png",
-  },
-  {
-    title: "Gleb Vashkevich",
-    points: "564 216",
-    imageSrc: "/avatar.png",
-  },
-  {
-    title: "Gleb Vashkevich",
-    points: "564 216",
-    imageSrc: "/avatar.png",
-  },
-  {
-    title: "Gleb Vashkevich",
-    points: "564 216",
-    imageSrc: "/avatar.png",
-  },
-];
+// const cardListData = [
+//   {
+//     title: "Gleb Vashkevich",
+//     points: "564 216",
+//     imageSrc: "/avatar.png",
+//   },
+//   {
+//     title: "Gleb Vashkevich",
+//     points: "564 216",
+//     imageSrc: "/avatar.png",
+//   },
+//   {
+//     title: "Gleb Vashkevich",
+//     points: "564 216",
+//     imageSrc: "/avatar.png",
+//   },
+//   {
+//     title: "Gleb Vashkevich",
+//     points: "564 216",
+//     imageSrc: "/avatar.png",
+//   },
+// ];
 
 export default function Card() {
-  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [activeTab, setActiveTab] = useState(tabs[0]);  
+  const [userScores, setUserScores] = useState([]);
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
+
+  const getRankedUsers = async () => {
+    try {
+      const response = await fetch(
+        `/api/scoreList`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.userScores);
+        setUserScores(data.userScores);
+      } else {
+        const errorData = await response.json();
+        setUserScores([]);
+        console.error("Error fetching user name:", errorData.error);
+      }
+    } catch (error) {
+      console.error("Error fetching user name:", error);
+    }
+  }
+
+  useEffect(() => {
+    getRankedUsers();
+  }, [])
 
   return (
     <div className="mb-10">
@@ -109,7 +133,7 @@ export default function Card() {
 
       <Carousel data={carouselData} />
 
-      <Cardlist data={cardListData} />
+      <Cardlist data={userScores} />
     </div>
   );
 }

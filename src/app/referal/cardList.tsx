@@ -19,7 +19,7 @@ const CardList: React.FC<CardListProps> = ({ data }) => {
         >
           <div className="flex gap-3 items-center">
             <Image
-              src={item.imageSrc}
+              src={item.imageSrc !== ""? item.imageSrc : "/avatar.png"}
               alt={item.title}
               width={50}
               height={50}
