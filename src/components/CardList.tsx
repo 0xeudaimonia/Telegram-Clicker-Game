@@ -25,7 +25,7 @@ const CardList: React.FC<CardListProps> = ({ data }) => {
               <p className="text-base m-0 w-4 text-center">{index + 1}</p>
             )}
             <Image
-              src={item.imageSrc}
+              src={item.imageSrc !== "" ? item.imageSrc : "/avatar.png"}
               alt={item.title}
               width={28}
               height={28}
