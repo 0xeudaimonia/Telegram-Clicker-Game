@@ -21,6 +21,10 @@ const TradersIdPage = () => {
     fetchDailyRewards();
   }, []);
 
+  const getDailyRewards = () => {
+    
+  }
+
   return (
     <>
       <div className="text-white bg-[url(/background2.png)] pb-20">
@@ -49,6 +53,7 @@ const TradersIdPage = () => {
         )}
         <Button
           label="Забрать"
+
           className="btn mt-16 text-base bg-[url(/bgButton.png)] bg-cover bg-center bg-no-repeat btn-primary text-white w-full"
         />
       </div>
