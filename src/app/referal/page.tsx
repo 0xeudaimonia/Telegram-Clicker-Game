@@ -4,7 +4,6 @@ import CardList from "./cardList";
 import TabelList from "./tabelList";
 import CopyToClipboard from "@/components/copyToClipboard";
 import { getUserData } from "@/utils/webAppUtils";
-import LayoutHome from "@/components/layouts/index";
 
 const user = getUserData();
 
@@ -26,37 +25,39 @@ const cardListData = [
 //     name: "Прораб",
 //     pointFromFriend: "307 582",
 //     pointPremium: "615 165",
-//     imageSrc: "/avatar.jpeg",
+//     imageSrc: "/avatar.png",
 //   },
 //   {
 //     name: "Прораб",
 //     pointFromFriend: "307 582",
 //     pointPremium: "615 165",
-//     imageSrc: "/avatar.jpeg",
+//     imageSrc: "/avatar.png",
 //   },
 //   {
 //     name: "Прораб",
 //     pointFromFriend: "307 582",
 //     pointPremium: "615 165",
-//     imageSrc: "/avatar.jpeg",
+//     imageSrc: "/avatar.png",
 //   },
 //   {
 //     name: "Прораб",
 //     pointFromFriend: "307 582",
 //     pointPremium: "615 165",
-//     imageSrc: "/avatar.jpeg",
+//     imageSrc: "/avatar.png",
 //   },
 //   {
 //     name: "Прораб",
 //     pointFromFriend: "307 582",
 //     pointPremium: "615 165",
-//     imageSrc: "/avatar.jpeg",
+//     imageSrc: "/avatar.png",
 //   },
 // ];
 
 interface UserData {
   id: number;
   username: string;
+  avatar: string,
+  bonus: string
 }
 
 export default function ReferalPage() {
@@ -83,7 +84,7 @@ export default function ReferalPage() {
             );
             if (referralResponse.ok) {
               const referralData = await referralResponse.json();
-              setReferralUsers(referralData.referralUsers || []);
+              setReferralUsers(referralData.refUsers || []);
             } else {
               console.error(
                 "Error fetching referral users:",
@@ -106,7 +107,7 @@ export default function ReferalPage() {
   }, [userId]);
 
   return (
-    <LayoutHome>
+    <>
       <div className="text-white bg-[url(/background2.png)] pb-20">
         <div className="text-center">
           <h5>Пригласите друзей!</h5>
@@ -118,14 +119,14 @@ export default function ReferalPage() {
         <TabelList
           data={referralUsers.map((user) => ({
             name: user.username,
-            pointFromFriend: "0", // Placeholder data, update with actual points if available
+            pointFromFriend: user.bonus, // Placeholder data, update with actual points if available
             pointPremium: "0", // Placeholder data, update with actual points if available
-            imageSrc: "/avatar.jpeg",
+            imageSrc: user.avatar == "" ? "/avatar.png" : user.avatar,
           }))}
         />
 
         <CopyToClipboard referralCode={referralCode} />
       </div>
-    </LayoutHome>
+    </>
   );
 }

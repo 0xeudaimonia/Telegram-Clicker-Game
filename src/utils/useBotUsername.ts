@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { env } from 'process';
-const BOT_TOKEN = env.TELEGRAM_BOT_TOKEN;
+const BOT_TOKEN = env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
 
 
 console.log("BOT_TOKEN", BOT_TOKEN);

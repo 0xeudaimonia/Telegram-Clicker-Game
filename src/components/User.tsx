@@ -5,6 +5,7 @@ import { getUserData } from "@/utils/webAppUtils";
 
 const User = () => {
   const [userName, setUserName] = useState<string>("");
+  const [userAvatar, setUserAvatar] = useState<string>("/avatar.png");
 
   const userData = getUserData();
   const userId = userData?.id;
@@ -19,6 +20,12 @@ const User = () => {
           if (response.ok) {
             const data = await response.json();
             setUserName(data.userName || "Guest");
+            if (data.avatar == "") {
+              setUserAvatar("/avatar.png");
+            } else {
+              setUserAvatar(data.avatar);
+            }
+
           } else {
             const errorData = await response.json();
             console.error("Error fetching user name:", errorData.error);
@@ -38,7 +45,7 @@ const User = () => {
     <div className="p-4 text-white bg-black">
       <div className="flex justify-start items-center mb-4">
         <Image
-          src="/avatar.jpeg"
+          src={userAvatar}
           alt="avatar"
           width={32}
           height={32}

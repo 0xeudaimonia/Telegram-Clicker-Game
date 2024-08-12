@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { message } = body;
 
-    console.log("message", message);
+    // console.log("message", message);
 
     if (message) {
       const telegramId = String(message.from.id);
@@ -38,40 +38,59 @@ export async function POST(req: NextRequest) {
           });
 
           if (referrer) {
-            const invite_record = await prisma.bonusSeting.findFirst({
-              where: { title: "invite_friend" },
+            const bonus_type = await prisma.bonusType.findFirst({
+              where: {
+                title: "invite_friend",
+              }
             });
 
-            console.log("invite record", invite_record);
+            let invite_record;
 
-            let invite_points = invite_record?.points ? invite_record?.points : 0;
-
-            const referrrerScore = await prisma.game.findFirst({
-              where: { userId: referrer.id }
-            });
-
-            console.log("referrrerScore", referrrerScore);
-            let result;
-            if (referrrerScore) {
-              let refferal_points = referrrerScore?.points ? referrrerScore?.points : 0;
-
-              result = await prisma.game.update({
-                where: { id: referrrerScore.id },
-                data: {
-                  points: refferal_points + invite_points
-                },
+            if (bonus_type?.id) {
+              invite_record = await prisma.bonusSeting.findFirst({
+                where: {
+                  type: bonus_type.id,
+                }
               });
-            } else {
-              result = await prisma.game.create({
+
+              let invite_points = invite_record?.points ? invite_record?.points : 0;
+
+              const referrrerScore = await prisma.game.findFirst({
+                where: { userId: referrer.id }
+              });
+
+              // console.log("referrrerScore", referrrerScore);
+              let result;
+              if (referrrerScore) {
+                let refferal_points = referrrerScore?.points ? referrrerScore?.points : 0;
+
+                result = await prisma.game.update({
+                  where: { id: referrrerScore.id },
+                  data: {
+                    points: refferal_points + invite_points
+                  },
+                });
+              } else {
+                result = await prisma.game.create({
+                  data: {
+                    userId: referrer.id,
+                    score: 0,
+                    level: 1,
+                    points: invite_points,
+                  },
+                });
+              }
+
+              result = await prisma.bonusHistory.create({
                 data: {
+                  type: bonus_type.id,
                   userId: referrer.id,
-                  score: 0,
-                  level: 1,
-                  points: invite_points,
+                  from: telegramId,
+                  rewards: invite_points
                 },
               });
             }
-          }          
+          }       
         }
 
         const user = await prisma.user.create({
@@ -88,7 +107,7 @@ export async function POST(req: NextRequest) {
         });
 
         // Send a welcome message
-        await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        await axios.post(`https://api.telegram.org/bot${process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN}/sendMessage`, {
           chat_id: telegramId,
           text: 'Welcome to our service! Your account has been created.',
         });
@@ -101,7 +120,7 @@ export async function POST(req: NextRequest) {
         });
 
         // Send a message if user already exists
-        await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        await axios.post(`https://api.telegram.org/bot${process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN}/sendMessage`, {
           chat_id: telegramId,
           text: 'You are already registered.',
         });

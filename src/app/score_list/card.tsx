@@ -58,22 +58,22 @@ const cardListData = [
   {
     title: "Gleb Vashkevich",
     points: "564 216",
-    imageSrc: "/avatar.jpeg",
+    imageSrc: "/avatar.png",
   },
   {
     title: "Gleb Vashkevich",
     points: "564 216",
-    imageSrc: "/avatar.jpeg",
+    imageSrc: "/avatar.png",
   },
   {
     title: "Gleb Vashkevich",
     points: "564 216",
-    imageSrc: "/avatar.jpeg",
+    imageSrc: "/avatar.png",
   },
   {
     title: "Gleb Vashkevich",
     points: "564 216",
-    imageSrc: "/avatar.jpeg",
+    imageSrc: "/avatar.png",
   },
 ];
 
