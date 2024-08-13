@@ -10,14 +10,15 @@ interface CardListProps {
     data: string;
     type: number;
   }[];
+  dailyRewardsIndex: number
 }
 
-const Card = ({ data }: CardListProps) => {
+const Card = ({ data, dailyRewardsIndex }: CardListProps) => {
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 gap-4" id="tender">
-      {data.map((item) => (
+      {data.map((item, index) => (
         <div
-          className="card border px-3 py-1 text-center tender_cards"
+          className={`card border px-3 py-1 text-center ${dailyRewardsIndex === index ? 'tender_cards_select' : 'tender_cards'}`}
           key={item.id}
         >
           <h5 className="capitalize">{item.data}</h5>

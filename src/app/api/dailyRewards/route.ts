@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get('userId');
 
   if (!userId) {
-    return NextResponse.json({ error: 'User ID is required', dailyRewards: [] }, { status: 400 });
+    return NextResponse.json({ error: 'Отсутствующий'}, { status: 400 });
   }
 
   try {
@@ -90,9 +90,9 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json({ dailyRewards, dailyIndex });
     }
-    return NextResponse.json({ error: "There is no daily reward handling in database", dailyRewards: [] });
+    return NextResponse.json({ error: "В базе данных нет ежедневной обработки вознаграждений"});
   } catch (error) {
-    return NextResponse.json({ error: 'Internal server error', dailyRewards: [] }, { status: 500 });
+    return NextResponse.json({ error: 'Внутренняя ошибка сервера'}, { status: 500 });
   }
 }
 
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
     let result;
 
     if (!userId) {
-      return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
+      return NextResponse.json({ error: 'Отсутствующий' }, { status: 400 });
     }
 
     const dailyRewardType = await prisma.bonusType.findFirst({
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
       if (lastDailyRewards) {
         dailyIndex = getDailyRewardIndex(dailyRewards, lastDailyRewards);
         if (dailyIndex == ALREADY_GOT_REWARDS) {
-          return NextResponse.json({ error: "Already got today's rewards" }, { status: 400 });
+          return NextResponse.json({ error: "Уже получил сегодняшние награды" }, { status: 400 });
         }
       }
 
@@ -178,7 +178,7 @@ export async function POST(req: NextRequest) {
       }
 
       return NextResponse.json({
-        message: "Successfuly got today's rewards",
+        message: "Успешно получил сегодняшние награды",
         data: {
           type: dailyRewardType.id,
           userId: userId,
@@ -187,12 +187,12 @@ export async function POST(req: NextRequest) {
         }
       });
     }
-    return NextResponse.json({ error: 'Missing required fields in DataBase' }, { status: 400 });
+    return NextResponse.json({ error: 'Отсутствуют обязательные поля в базе данных' }, { status: 400 });
   } catch (error) {
     // console.error('Error saving or updating score:', error);
     if (error instanceof SyntaxError) {
-      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+      return NextResponse.json({ error: 'Неверный JSON' }, { status: 400 });
     }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Внутренняя ошибка сервера' }, { status: 500 });
   }
 }
