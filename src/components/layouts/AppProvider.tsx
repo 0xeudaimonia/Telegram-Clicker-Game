@@ -8,13 +8,13 @@ type Props = {
 const AppContext = createContext<{
   userPoints: number
   setUserPoints: React.Dispatch<React.SetStateAction<number>>
-  status: string
-  setStatus: React.Dispatch<React.SetStateAction<string>>
+  currentUserId: string
+  setCurrentUserId: React.Dispatch<React.SetStateAction<string>>
 }>({
   userPoints: 0,
   setUserPoints: () => { },
-  status: '',
-  setStatus: () => { }
+  currentUserId: '',
+  setCurrentUserId: () => { }
 });
 
 export const useAppProvider = () => useContext(AppContext)
@@ -23,13 +23,13 @@ export default function AppProvider({
   children
 }: Props) {
   const [userPoints, setUserPoints] = useState<number>(0)
-  const [status, setStatus] = useState<string>('')
+  const [currentUserId, setCurrentUserId] = useState<string>('')
   return (
     <AppContext.Provider value={{
       userPoints,
       setUserPoints,
-      status,
-      setStatus
+      currentUserId,
+      setCurrentUserId
     }}>
       {children}
     </AppContext.Provider>
