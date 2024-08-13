@@ -4,23 +4,39 @@ import Image from "next/image";
 import Button from "@components/Button";
 import React, { useEffect, useState } from "react";
 import { useAppProvider } from "@components/layouts/AppProvider";
+import { error } from "console";
+
+interface RewardStatus {
+  status: 'Error' | 'Success' | 'Progress' | 'Ready'
+  message?: string
+}
 
 const TradersIdPage = () => {
   const [dailyRewards, setDailyRewards] = useState([]);
   const { currentUserId } = useAppProvider();
-  const [dailyRewardSuccess, setDailyRewardSuccess] = useState(false);
+  const [dailyRewardStatus, setDailyRewardStatus] = useState<RewardStatus | null>({ status: 'Progress' });
+  const [dailyRewardsIndex, setDailyRewardsIndex] = useState(0);
+  const [dailyRewardsAmount, setDailyRewardsAmount] = useState(0); 
 
   useEffect(() => {
     const fetchDailyRewards = async () => {
       try {
-        // console.log("current user id", currentUserId)
+        setDailyRewardStatus({ status: 'Progress' })
         const response = await fetch(`/api/dailyRewards?userId=${currentUserId}`);
         const data = await response.json();
-        console.log("daily reward info", data);
+        // console.log("daily reward info", data);
+        // if (!data?.dailyRewards?.length) throw new Error('Ошибка получения информации о ежедневных вознаграждениях')
+        // if (!data?.dailyIndex) throw new Error('Ошибка получения статуса пользователя')
+        if(data?.error) throw new Error(data?.error);
         setDailyRewards(data.dailyRewards);
+        setDailyRewardsIndex(data.dailyIndex);
+        setDailyRewardStatus({ status: 'Ready' })
       } catch (error) {
-        console.error("Error fetching daily rewards:", error);
         setDailyRewards([]);
+        setDailyRewardStatus({
+          status: 'Error',
+          message: error instanceof Error ? error.message : 'неизвестная ошибка'
+        })
       }
     };
 
@@ -28,12 +44,14 @@ const TradersIdPage = () => {
   }, []);
 
   const getDailyRewards = async () => {
-    console.log(currentUserId);
-    if (!currentUserId) {
-      console.log("cannot get current user id");
-      return;
-    }
     try {
+      setDailyRewardStatus({
+        status: 'Progress'
+      })
+      // console.log(currentUserId);
+      if (!currentUserId) {
+        throw new Error("невозможно получить текущий идентификатор пользователя");
+      }
       const response = await fetch("/api/dailyRewards", {
         method: "POST",
         headers: {
@@ -44,11 +62,22 @@ const TradersIdPage = () => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to save score");
+      const resJson = await response.json()
+
+      if (resJson.error) {
+        throw new Error(resJson.error);
       }
+
+      setDailyRewardsAmount(resJson.data.rewards);
+
+      setDailyRewardStatus({
+        status: 'Success'
+      })
     } catch (error) {
-      console.error("Error saving score:", error);
+      setDailyRewardStatus({
+        status: 'Error',
+        message: error instanceof Error ? error.message : 'неизвестная ошибка'
+      })
     }
   }
 
@@ -70,20 +99,32 @@ const TradersIdPage = () => {
             заново
           </p>
         </div>
-        {dailyRewards.length > 0 ? (
-          <Card data={dailyRewards} />
-        ) : (
-          <div className="text-center">
-            <p>Загрузка...</p>
-            <span className="loading loading-spinner loading-lg"></span>
-          </div>
-        )}
+        {
+          (dailyRewardStatus?.status !== 'Error' && dailyRewardStatus?.status === 'Ready') && (
+            <Card data={dailyRewards} dailyRewardsIndex={dailyRewardsIndex} />
+          )
+        }
+        {
+          dailyRewardStatus?.status === 'Progress' ?
+            <div className="text-center">
+              <p>Загрузка...</p>
+              <span className="loading loading-spinner loading-lg"></span>
+            </div> :
+            dailyRewardStatus?.status === 'Success' ?
+              <div className="text-center">Вы получили {dailyRewardsAmount} баллов</div> :
+              (
+                dailyRewardStatus?.status === 'Error' &&
+                <div className="text-center"> {
+                  dailyRewardStatus.message
+                }</div>
+              )
+        }
         <Button
           label="Забрать"
           onClick={getDailyRewards}
           className="btn mt-16 text-base bg-[url(/bgButton.png)] bg-cover bg-center bg-no-repeat btn-primary text-white w-full"
         />
-      </div>
+      </div >
     </>
   );
 };

@@ -92,7 +92,7 @@ export default function Card() {
       );
       if (response.ok) {
         const data = await response.json();
-        console.log(data.userScores);
+        // console.log(data.userScores);
         setUserScores(data.userScores);
       } else {
         const errorData = await response.json();
