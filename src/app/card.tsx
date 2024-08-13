@@ -14,10 +14,9 @@ const GameCanvas = dynamic(() => import("../components/GameCanvas"), {
   ssr: false,
 });
 
-export default function Card() {
-  
-  const { userPoints, setUserPoints } = useAppProvider();
-  const [tgUserId, setTgUserId] = useState<string>("");
+export default function Card() {  
+  const { userPoints, setUserPoints, currentUserId, setCurrentUserId } = useAppProvider();
+  // const [tgUserId, setTgUserId] = useState<string>("");
 
   const userId = user?.id;
 
@@ -29,7 +28,9 @@ export default function Card() {
         );
         if (response.ok) {
           const data = await response.json();
-          setTgUserId(data.userId || "Guest");
+          console.log(data);
+          setCurrentUserId(data.userId || "Guest");
+          // setTgUserId(data.userId || "Guest");
         } else {
           const errorData = await response.json();
           console.error("Error fetching user name:", errorData.error);
@@ -45,11 +46,11 @@ export default function Card() {
   // const [points, setPoints] = useState<number | null>(null);
 
   useEffect(() => {
-    if (tgUserId) {
+    if (currentUserId) {
       const fetchPoints = async () => {
         try {
           const response = await fetch(
-            `/api/getGamePoints?userId=${tgUserId}`,
+            `/api/getGamePoints?userId=${currentUserId}`,
             {
               method: "GET",
             }
@@ -72,7 +73,7 @@ export default function Card() {
 
       fetchPoints();
     }
-  }, [tgUserId]);
+  }, [currentUserId]);
 
   return (
     <>
@@ -93,7 +94,7 @@ export default function Card() {
         <h2 className="">{userPoints}</h2>
       </div>
       <div>
-        <GameCanvas userId={tgUserId} />
+        <GameCanvas userId={currentUserId} />
       </div>
 
       <div className="my-5 flex justify-between items-center">
