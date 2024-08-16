@@ -6,8 +6,10 @@ const prisma = new PrismaClient();
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log('Request body:', body);
+    // console.log('Request body:', body);
     const { userId, score, level, points } = body;
+
+    // console.log(userId, score, level, points);
 
     if (!userId || !score || !level || !points) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
