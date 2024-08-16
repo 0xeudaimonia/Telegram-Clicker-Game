@@ -24,10 +24,13 @@ interface Tower {
   y: number;
 }
 
+
+
 const useBlock = (): Block => {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [x, setX] = useState(370);
   const [y, setY] = useState(150);
+  const [direction, setDirection] = useState(-1);
   const [speed, setSpeed] = useState(0);
   const [angle, setAngle] = useState(45);
   const [state, setState] = useState("ready");
@@ -49,7 +52,7 @@ const useBlock = (): Block => {
     if (newAngle > 45) {
       newAngle = 45;
     } else if (newAngle < -45) {
-      newAngle = 130;
+      newAngle = -45;
     }
 
     setX(370 + rope_length * Math.sin(newAngle));
@@ -57,20 +60,21 @@ const useBlock = (): Block => {
     setAngle(newAngle);
     setAcceleration(Math.sin(newAngle) * force);
     setSpeed(speed + 1.5 * acceleration);
-  }, [acceleration, angle, force, speed]);
+  }, [acceleration, angle, force, speed, direction]);
 
   const collided = useCallback(
     (tower: Tower): boolean => {
+      // console.log("tower.size", tower.size);
+      // console.log("tower.xlist", tower.xlist, xlast);
       if (tower.size === 0) return false;
       const lastBlockX = tower.xlist[tower.xlist.length - 1];
       const withinXRangeLast =
         xlast < lastBlockX + 60 && xlast > lastBlockX - 60;
       const firstBlockX = tower.xlist[0];
-      const withinXRangeFirst =
-        xlast < firstBlockX + 60 && xlast > firstBlockX - 60;
-      const withinYRange = tower.y - y <= 64 && tower.y - y >= 0;
+      // const withinXRangeFirst = xlast < firstBlockX + 60 && xlast > firstBlockX - 60;
+      const withinYRange = tower.y < 536 ? (tower.y - y <= 0) : (tower.y - y <= 64) && tower.y - y >= 0;
       const onEdge = xlast === firstBlockX || xlast === lastBlockX;
-      return withinXRangeLast && withinXRangeFirst && withinYRange && !onEdge;
+      return withinXRangeLast && withinYRange && !onEdge;
     },
     [xlast, y]
   );
@@ -117,6 +121,12 @@ const useBlock = (): Block => {
     },
     [x, y]
   );
+  const [a, setA] = useState<string>('1')
+  const [b, setB] = useState<string>('2')
+
+  const onChange = useCallback(() => {
+    console.log(a, b)
+  }, [a])
 
   const display = useCallback(
     (context: CanvasRenderingContext2D, origin: { x: number; y: number }) => {
@@ -129,14 +139,16 @@ const useBlock = (): Block => {
     },
     [image, state, x, y, drawRope]
   );
+  
 
   const respawn = useCallback((tower: Tower) => {
-    setAngle(tower.size % 2 === 0 ? -45 : 45);
+    setDirection((prevDirection) => -prevDirection);
+    setAngle(direction === 1 ? -45 : 45);
     setY(150);
     setX(370);
     setSpeed(0);
     setState("ready");
-  }, []);
+  }, [direction, angle]);
 
   const reset = useCallback(() => {
     setX(370);

@@ -90,6 +90,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
           setScore((prevScore) => prevScore + 1);
 
           if ((score + 1) % 10 === 0) {
+            saveScore(score, boosterLevel, points + 1000);
             setPoints((prevPoints) => prevPoints + 1000);
             const baseReward = getBoosterReward(boosterLevel);
             const speedIncrease = calculateSpeedIncrease(
@@ -173,7 +174,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
         ref={canvasRef}
         width={800}
         height={600}
-        className="border border-black w-full h-full rounded-2xl bg-[url('/assets/mask_group.png')] bg-cover bg-no-repeat"
+        className="border border-black w-full h-full rounded-2xl bg-[url('/assets/mask_group.jpg')] bg-cover bg-no-repeat"
         onClick={handleClick}
       />
       {gameState === "start" && (
