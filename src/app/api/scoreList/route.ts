@@ -5,14 +5,16 @@ import getUserAvatar from "@utils/getUserAvatar";
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
+  const limitCount = req.nextUrl.searchParams.get("limitCount");
   try {
     const users = await prisma.game.findMany({
       orderBy: {
         points: 'desc'
       },
-      take: 10
+      take: parseInt(limitCount ? limitCount : '10')
     });
 
+    // console.log("users", users);
     const userScores = await Promise.all(users.map(async (element) => {
       const user = await prisma.user.findUnique({
         where: {
@@ -30,7 +32,7 @@ export async function GET(req: NextRequest) {
       }
     }));
 
-    if (users) {
+    if (userScores) {
       return NextResponse.json({ userScores });
     } else {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
