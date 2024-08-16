@@ -88,7 +88,7 @@ export default function Card() {
   const getRankedUsers = async () => {
     try {
       const response = await fetch(
-        `/api/scoreList`
+        `/api/scoreList?limitCount=10`
       );
       if (response.ok) {
         const data = await response.json();

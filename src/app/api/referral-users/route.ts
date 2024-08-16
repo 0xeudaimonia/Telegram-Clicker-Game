@@ -6,13 +6,13 @@ import user from '@app/admin/users/page';
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
+  const userId = req.nextUrl.searchParams.get('userId');
+
+  if (!userId) {
+    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+  }
+
   try {
-    const userId = req.nextUrl.searchParams.get('userId');
-
-    if (!userId) {
-      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
-    }
-
     const referralUsers = await prisma.user.findMany({
       where: {
         ReferralUser: {

@@ -5,6 +5,7 @@ import getUserAvatar from "@utils/getUserAvatar";
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
+  
   const telegramUserId = req.nextUrl.searchParams.get('telegramUserId');
 
   if (!telegramUserId) {
@@ -12,7 +13,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const referralCode = `r_${telegramUserId}`
+    // const referralCode = `r_${telegramUserId}`
     const user = await prisma.user.findUnique({
       where: {
         telegramId: telegramUserId
