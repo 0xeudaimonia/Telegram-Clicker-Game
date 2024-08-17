@@ -3,6 +3,8 @@ import { useEffect, useState, useRef } from "react";
 import { getBoosterReward, calculateSpeedIncrease } from "../utils/gameLogic";
 import useBlock from "./Block";
 import useTower from "./Tower";
+import { useAppProvider } from "@components/layouts/AppProvider";
+import { fetchPoints } from "@utils/gameStatus";
 
 interface GameCanvasProps {
   userId: string;
@@ -20,6 +22,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
   const [points, setPoints] = useState(0);
   const [backgroundY, setBackgroundY] = useState(0);
   const [tgUserId, setTgUserId] = useState<string>("");
+  const { userPoints, setUserPoints, currentUserId, setCurrentUserId } = useAppProvider();
 
   const handleStart = () => {
     setGameState("playing");
@@ -66,6 +69,11 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
     }
   };
 
+  const getPoints = async (currentUserId: string) => {
+    const result = await fetchPoints(currentUserId);
+    setUserPoints(result.points);
+  }
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
@@ -91,6 +99,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
 
           if ((score + 1) % 10 === 0) {
             saveScore(score, boosterLevel, points + 1000);
+            getPoints(userId);
             setPoints((prevPoints) => prevPoints + 1000);
             const baseReward = getBoosterReward(boosterLevel);
             const speedIncrease = calculateSpeedIncrease(
@@ -109,6 +118,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
       if (block.state === "miss") {
         setGameState("gameover");
         saveScore(score, boosterLevel, points);
+        getPoints(userId);
       }
 
       const drawBackground = (context: CanvasRenderingContext2D) => {
@@ -201,11 +211,13 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
           </button>
         </div>
       )}
-      {/* <div className="absolute top-0 left-0 p-4 text-white">
-        <h5>Score: {score}</h5>
-        <h5>Reward: {reward}</h5>
-        <h5>Points: {points}</h5>
-      </div> */}
+      {gameState === "playing" && (
+        <div className="absolute top-0 left-0 p-4 font-thin text-red-900">
+          <h5>Score: {score}</h5>
+          <h5>Reward: {reward}</h5>
+          <h5>Points: {points}</h5>
+        </div>
+      )}
     </div>
   );
 };

@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { getUserData } from "@/utils/webAppUtils";
 import { useAppProvider } from "@components/layouts/AppProvider";
+import { fetchPoints } from "@utils/gameStatus";
 
 const user = getUserData();
 
@@ -47,31 +48,12 @@ export default function Card() {
 
   useEffect(() => {
     if (currentUserId) {
-      const fetchPoints = async () => {
-        try {
-          const response = await fetch(
-            `/api/getGamePoints?userId=${currentUserId}`,
-            {
-              method: "GET",
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Failed to fetch game points");
-          }
-
-          const data = await response.json();
-          // setPoints(data.points);
-          const formattedPoints = data.points ? data.points : 0;
-          setUserPoints(formattedPoints);
-        } catch (error) {
-          console.error("Error fetching game points:", error);
-          // setPoints(0);
-          setUserPoints(0);
-        }
+      const fetchGamePoints = async () => {
+        const result = await fetchPoints(currentUserId);
+        setUserPoints(result.points);
       };
 
-      fetchPoints();
+      fetchGamePoints();
     }
   }, [currentUserId]);
 
