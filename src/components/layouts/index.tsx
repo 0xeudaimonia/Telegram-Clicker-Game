@@ -4,6 +4,7 @@ import { Roboto_Mono } from "next/font/google";
 import Navbar from "@app/navbar";
 import User from "@components/User";
 import BottomNav from "@app/bottomNav";
+import { isMobile } from "react-device-detect";
 import "../../app/style.css";
 
 interface LayoutHomeProps {
@@ -16,7 +17,7 @@ function LayoutHome({ children }: LayoutHomeProps) {
   return (
     <>
       {/* <Navbar /> */}
-      <User />
+      {isMobile && <User />}
       <div className="card border-t-2 p-4 pb-16" id="border-card">
         {children}
       </div>

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { getUserData } from "@/utils/webAppUtils";
 import { useAppProvider } from "@components/layouts/AppProvider";
 import { fetchPoints } from "@utils/gameStatus";
+import { isMobile } from "react-device-detect";
 
 const user = getUserData();
 
@@ -15,7 +16,7 @@ const GameCanvas = dynamic(() => import("../components/GameCanvas"), {
   ssr: false,
 });
 
-export default function Card() {  
+export default function Card() {
   const { userPoints, setUserPoints, currentUserId, setCurrentUserId } = useAppProvider();
   // const [tgUserId, setTgUserId] = useState<string>("");
   const [resetFlag, setResetFlag] = useState(-1);
@@ -42,13 +43,15 @@ export default function Card() {
       }
     };
 
-    fetchUserId();
+    if (isMobile) {
+      fetchUserId();
+    }
   }, [userId]);
 
   // const [points, setPoints] = useState<number | null>(null);
 
   useEffect(() => {
-    if (currentUserId) {
+    if (currentUserId && isMobile) {
       const fetchGamePoints = async () => {
         const result = await fetchPoints(currentUserId);
         setUserPoints(result.points);
@@ -58,7 +61,7 @@ export default function Card() {
     }
   }, [currentUserId]);
 
-  return (
+  return isMobile ? (
     <>
       <div className="flex justify-center items-center gap-3 text-center">
         {cardData.map((card) => (
@@ -89,10 +92,23 @@ export default function Card() {
           <Button
             label="Сбросить блок"
             className="btn text-base bg-[url(/bgButton.png)] bg-cover bg-center bg-no-repeat btn-primary text-white"
-            onClick={() => { setResetFlag((prevResetFlag) => -prevResetFlag)}}
+            onClick={() => { setResetFlag((prevResetFlag) => -prevResetFlag) }}
           />
         </div>
       </div>
     </>
-  );
+  ) : (
+    <div className="h-screen bg-blend-color">
+      <div className="flex flex-col gap-5 p-5">
+        <img
+          src="nftpage.png"
+          alt="Kolegrad"
+          className="object-contain w-full h-96"
+        />
+        <h1 className="text-xl text-center text-white fw-bold">
+          Sorry, this app is only available on mobile devices.
+        </h1>
+      </div>
+    </div>
+  )
 }
