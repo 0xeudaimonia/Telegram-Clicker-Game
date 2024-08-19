@@ -19,7 +19,7 @@ const GameCanvas = dynamic(() => import("../components/GameCanvas"), {
 export default function Card() {
   const { userPoints, setUserPoints, currentUserId, setCurrentUserId } = useAppProvider();
   // const [tgUserId, setTgUserId] = useState<string>("");
-  const [resetFlag, setResetFlag] = useState(-1);
+  const [dropFlag, setDropFlag] = useState(-1);
 
   const userId = user?.id;
 
@@ -80,7 +80,7 @@ export default function Card() {
         <h2 className="">{userPoints}</h2>
       </div>
       <div>
-        <GameCanvas userId={currentUserId} resetFlag={resetFlag} />
+        <GameCanvas userId={currentUserId} dropFlag={dropFlag} />
       </div>
 
       <div className="my-5 flex justify-between items-center">
@@ -92,7 +92,7 @@ export default function Card() {
           <Button
             label="Сбросить блок"
             className="btn text-base bg-[url(/bgButton.png)] bg-cover bg-center bg-no-repeat btn-primary text-white"
-            onClick={() => { setResetFlag((prevResetFlag) => -prevResetFlag) }}
+            onClick={() => { setDropFlag((perviousDropFlag) => -perviousDropFlag) }}
           />
         </div>
       </div>
