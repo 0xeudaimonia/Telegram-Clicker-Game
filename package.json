@@ -24,6 +24,7 @@
     "react-daisyui": "^5.0.0",
     "react-dom": "^18.2.0",
     "react-json-pretty": "^2.2.0",
+    "react-device-detect": "^2.2.3",
     "styled-components": "^6.1.12",
     "three": "^0.166.1"
   },
