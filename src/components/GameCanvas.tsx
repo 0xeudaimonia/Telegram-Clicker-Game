@@ -8,9 +8,10 @@ import { fetchPoints } from "@utils/gameStatus";
 
 interface GameCanvasProps {
   userId: string;
+  resetFlag: number;
 }
 
-const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
+const GameCanvas: React.FC<GameCanvasProps> = ({ userId, resetFlag }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number | null>(null);
   const block = useBlock();
@@ -73,6 +74,10 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId }) => {
     const result = await fetchPoints(currentUserId);
     setUserPoints(result.points);
   }
+
+  useEffect(() => {
+    handleRestart();
+  }, [resetFlag]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
