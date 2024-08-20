@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { getUserData } from "@/utils/webAppUtils";
 import { useAppProvider } from "@components/layouts/AppProvider";
 import { fetchPoints } from "@utils/gameStatus";
-import { isMobile } from "react-device-detect";
 
 const user = getUserData();
 
@@ -43,15 +42,13 @@ export default function Card() {
       }
     };
 
-    if (isMobile) {
-      fetchUserId();
-    }
+    fetchUserId();
   }, [userId]);
 
   // const [points, setPoints] = useState<number | null>(null);
 
   useEffect(() => {
-    if (currentUserId && isMobile) {
+    if (currentUserId) {
       const fetchGamePoints = async () => {
         const result = await fetchPoints(currentUserId);
         setUserPoints(result.points);
@@ -61,7 +58,7 @@ export default function Card() {
     }
   }, [currentUserId]);
 
-  return isMobile ? (
+  return (
     <>
       <div className="flex justify-center items-center gap-3 text-center">
         {cardData.map((card) => (
@@ -97,18 +94,5 @@ export default function Card() {
         </div>
       </div>
     </>
-  ) : (
-    <div className="h-screen bg-blend-color">
-      <div className="flex flex-col gap-5 p-5">
-        <img
-          src="nftpage.png"
-          alt="Kolegrad"
-          className="object-contain w-full h-96"
-        />
-        <h1 className="text-xl text-center text-white fw-bold">
-          Sorry, this app is only available on mobile devices.
-        </h1>
-      </div>
-    </div>
   )
 }

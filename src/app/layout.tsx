@@ -5,6 +5,8 @@ import React from "react";
 import Script from "next/script";
 import AppProvider from "@components/layouts/AppProvider";
 import LayoutHome from "@components/layouts";
+import { isMobile } from "react-device-detect";
+
 const inter = Roboto_Mono({ weight: ["400", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -27,9 +29,26 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AppProvider>
-          <LayoutHome>
-            {children}
-          </LayoutHome>
+          {
+            isMobile ? (
+              <LayoutHome>
+                {children}
+              </LayoutHome>
+            ) : (
+              <div className="h-screen bg-blend-color">
+                <div className="flex flex-col gap-5 p-5">
+                  <img
+                    src="nftpage.png"
+                    alt="Kolegrad"
+                    className="object-contain w-full h-96"
+                  />
+                  <h1 className="text-xl text-center text-white fw-bold">
+                    Sorry, this app is only available on mobile devices.
+                  </h1>
+                </div>
+              </div>
+            )
+          }
         </AppProvider>
       </body>
     </html>
