@@ -29,26 +29,9 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AppProvider>
-          {
-            isMobile ? (
-              <LayoutHome>
-                {children}
-              </LayoutHome>
-            ) : (
-              <div className="h-screen bg-blend-color">
-                <div className="flex flex-col gap-5 p-5">
-                  <img
-                    src="nftpage.png"
-                    alt="Kolegrad"
-                    className="object-contain w-full h-96"
-                  />
-                  <h1 className="text-xl text-center text-white fw-bold">
-                    Sorry, this app is only available on mobile devices.
-                  </h1>
-                </div>
-              </div>
-            )
-          }
+          <LayoutHome>
+            {children}
+          </LayoutHome>
         </AppProvider>
       </body>
     </html>

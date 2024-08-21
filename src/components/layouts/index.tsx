@@ -17,7 +17,7 @@ function LayoutHome({ children }: LayoutHomeProps) {
   return (
     <>
       {/* <Navbar /> */}
-      {isMobile && <User />}
+      <User />
       <div className="card border-t-2 p-4 pb-16" id="border-card">
         {children}
       </div>
