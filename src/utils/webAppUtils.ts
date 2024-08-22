@@ -10,6 +10,9 @@ interface UserData {
 
 export function getUserData(): UserData | undefined {
   if (typeof window !== 'undefined') {
+    if (!WebApp.isExpanded) {
+      WebApp.expand(); // Expand to full screen if not already expanded
+    }
     return WebApp.initDataUnsafe.user as UserData | undefined;
   }
   return undefined;
