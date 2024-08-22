@@ -10,7 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^5.17.0",
+    "@prisma/client": "^5.18.0",
     "@twa-dev/sdk": "^7.0.0",
     "@types/three": "^0.166.0",
     "@vercel/postgres": "^0.9.0",
