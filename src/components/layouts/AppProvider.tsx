@@ -1,12 +1,11 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
-import { isMobile } from "react-device-detect";
+import { isMobile, isAndroid } from "react-device-detect";
 import Image from "next/image";
 
 type Props = {
   children: React.ReactNode;
 };
-
 const AppContext = createContext<{
   userPoints: number;
   setUserPoints: React.Dispatch<React.SetStateAction<number>>;
@@ -32,6 +31,9 @@ export default function AppProvider({ children }: Props) {
     setHasMounted(true);
   }, []);
 
+  const isFoldableOrMobile =
+    isMobile || (isAndroid && /fold/i.test(navigator.userAgent));
+
   if (!hasMounted) {
     // Prevents SSR mismatch by rendering nothing until the component has mounted
     return null;
@@ -46,7 +48,7 @@ export default function AppProvider({ children }: Props) {
         setCurrentUserId,
       }}
     >
-      {isMobile ? (
+      {isFoldableOrMobile ? (
         <>{children}</>
       ) : (
         <div className="h-screen">
