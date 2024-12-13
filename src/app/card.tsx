@@ -4,10 +4,11 @@ import Button from "@components/Button";
 import CardComponent from "@components/Card";
 import cardData from "@data/cardData.json"
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getUserData } from "@/utils/webAppUtils";
 import { useAppProvider } from "@components/layouts/AppProvider";
-import { fetchPoints } from "@utils/gameStatus";
+import { io, Socket } from "socket.io-client";
+import { motion, AnimatePresence } from "framer-motion";
 
 const user = getUserData();
 
@@ -17,8 +18,8 @@ const GameCanvas = dynamic(() => import("../components/GameCanvas"), {
 
 export default function Card() {
   const { userPoints, setUserPoints, currentUserId, setCurrentUserId } = useAppProvider();
-  // const [tgUserId, setTgUserId] = useState<string>("");
   const [dropFlag, setDropFlag] = useState(-1);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const userId = user?.id;
 
@@ -32,7 +33,6 @@ export default function Card() {
           const data = await response.json();
           console.log(data);
           setCurrentUserId(data.userId || "Guest");
-          // setTgUserId(data.userId || "Guest");
         } else {
           const errorData = await response.json();
           console.error("Error fetching user name:", errorData.error);
@@ -43,20 +43,20 @@ export default function Card() {
     };
 
     fetchUserId();
-  }, [userId]);
-
-  // const [points, setPoints] = useState<number | null>(null);
+  }, [setCurrentUserId, userId]);
 
   useEffect(() => {
     if (currentUserId) {
-      const fetchGamePoints = async () => {
-        const result = await fetchPoints(currentUserId);
-        setUserPoints(result.points);
-      };
+      const newSocket = io();
+      setSocket(newSocket);
 
-      fetchGamePoints();
+      newSocket.emit("joinGame", currentUserId);
+
+      newSocket.on("updatePoints", (points: number) => {
+        setUserPoints(points);
+      });
     }
-  }, [currentUserId]);
+  }, [currentUserId, setUserPoints]);
 
   return (
     <>
@@ -74,7 +74,18 @@ export default function Card() {
       </div>
       <div className="flex justify-center items-center gap-3 my-5">
         <Image src="/coin_60.svg" alt="building" width={60} height={60} />
-        <h2 className="">{userPoints}</h2>
+        <AnimatePresence mode="wait">
+          <motion.h2
+            key={userPoints}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="text-3xl font-bold"
+          >
+            {userPoints}
+          </motion.h2>
+        </AnimatePresence>
       </div>
       <div>
         <GameCanvas userId={currentUserId} dropFlag={dropFlag} />
