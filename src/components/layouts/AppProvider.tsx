@@ -13,9 +13,9 @@ const AppContext = createContext<{
   setCurrentUserId: React.Dispatch<React.SetStateAction<string>>;
 }>({
   userPoints: 0,
-  setUserPoints: () => { },
+  setUserPoints: () => {},
   currentUserId: "",
-  setCurrentUserId: () => { },
+  setCurrentUserId: () => {},
 });
 
 export const useAppProvider = () => useContext(AppContext);
@@ -32,7 +32,7 @@ export default function AppProvider({ children }: Props) {
   }, []);
 
   const isFoldableOrMobile =
-    isMobile || (isAndroid && /fold/i.test(navigator.userAgent));
+    isMobile || (isAndroid && /fold/i.test(navigator.userAgent)) || true;
 
   if (!hasMounted) {
     // Prevents SSR mismatch by rendering nothing until the component has mounted
@@ -48,9 +48,9 @@ export default function AppProvider({ children }: Props) {
         setCurrentUserId,
       }}
     >
-      {/* {isFoldableOrMobile ? ( */}
-      <>{children}</>
-      {/* ) : (
+      {isFoldableOrMobile ? (
+        <>{children}</>
+      ) : (
         <div className="h-screen">
           <div className="flex flex-col items-center justify-center h-full p-4">
             <Image src="/nftpage.png" alt="Telegram" height={350} width={350} />
@@ -59,7 +59,7 @@ export default function AppProvider({ children }: Props) {
             </h3>
           </div>
         </div>
-      )} */}
+      )}
     </AppContext.Provider>
   );
 }
