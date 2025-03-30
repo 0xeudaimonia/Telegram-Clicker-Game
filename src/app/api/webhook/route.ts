@@ -4,6 +4,39 @@ import axios from 'axios';
 
 const prisma = new PrismaClient();
 
+const TELEGRAM_BOT_TOKEN = process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
+const CHANNEL_USERNAME = '@YOUR_CHANNEL_USERNAME';
+const CHANNEL_URL = `YOUR TELEGRAM CHANNEL URL TO CHECK THE SUBSCRIPTION`;
+
+const miniAppUrl = "YOUR MINI APP URL";
+const keyboard = {
+  inline_keyboard: [
+    [
+      {
+        text: "🎮 Launch Clicker Game",
+        web_app: { url: miniAppUrl },
+      },
+    ],
+  ],
+};
+
+async function isUserSubscribed(telegramId: string) {
+  try {
+    const response = await axios.get(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getChatMember`, {
+      params: {
+        chat_id: CHANNEL_USERNAME,
+        user_id: telegramId,
+      },
+    });
+
+    const status = response.data.result?.status;
+    return ['member', 'administrator', 'creator'].includes(status);
+  } catch (error) {
+    console.error('Error checking subscription:', error);
+    return false; // Assume not subscribed on error
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -22,6 +55,15 @@ export async function POST(req: NextRequest) {
         if (messageParts.length > 1) {
           referrerCode = messageParts[1];
         }
+      }
+
+      const isSubscribed = await isUserSubscribed(telegramId);
+      if (!isSubscribed) {
+        await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          chat_id: telegramId,
+          text: `You must join our channel ${CHANNEL_USERNAME} to play the game. \nPlease join the channel: ${CHANNEL_URL}`,
+        });
+        return NextResponse.json({ status: 'not_subscribed' });
       }
 
       const existingUser = await prisma.user.findUnique({
@@ -89,27 +131,44 @@ export async function POST(req: NextRequest) {
                   rewards: invite_points
                 },
               });
+
+              const user = await prisma.user.create({
+                data: {
+                  telegramId,
+                  username,
+                  referralCode,
+                  ReferralUser: {
+                    create: {
+                      referrerId: referrer ? referrer.id : null,
+                    },
+                  },
+                },
+              });
+              await prisma.game.create({
+                data: {
+                  userId: user.id,
+                  score: 0,
+                  level: 1,
+                  points: invite_points,
+                },
+              });
+              await prisma.bonusHistory.create({
+                data: {
+                  type: bonus_type.id,
+                  userId: user.id,
+                  from: referrer ? referrer.telegramId : 'system',
+                  rewards: invite_points,
+                },
+              });
             }
           }       
         }
-
-        const user = await prisma.user.create({
-          data: {
-            telegramId,
-            username,
-            referralCode,
-            ReferralUser: {
-              create: {
-                referrerId: referrer ? referrer.id : null,
-              },
-            },
-          },
-        });
 
         // Send a welcome message
         await axios.post(`https://api.telegram.org/bot${process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN}/sendMessage`, {
           chat_id: telegramId,
           text: 'Welcome to our service! Your account has been created.',
+          reply_markup: keyboard,
         });
       } else {
         const updatedUser = await prisma.user.update({
@@ -123,6 +182,7 @@ export async function POST(req: NextRequest) {
         await axios.post(`https://api.telegram.org/bot${process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN}/sendMessage`, {
           chat_id: telegramId,
           text: 'You are already registered.',
+          reply_markup: keyboard,
         });
       }
     }
