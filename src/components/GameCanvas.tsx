@@ -1,11 +1,10 @@
 "use client";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getBoosterReward, calculateSpeedIncrease } from "../utils/gameLogic";
 import useBlock from "./Block";
 import useTower from "./Tower";
 import { useAppProvider } from "@components/layouts/AppProvider";
 import { fetchPoints } from "@utils/gameStatus";
-import { io, Socket } from "socket.io-client";
 
 interface GameCanvasProps {
   userId: string;
@@ -21,11 +20,10 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId, dropFlag }) => {
   const [boosterLevel, setBoosterLevel] = useState(1);
   const [score, setScore] = useState(0);
   const [reward, setReward] = useState(0);
-  const [gamePoints, setGamePoints] = useState(0);
+  const [points, setPoints] = useState(0);
   const [backgroundY, setBackgroundY] = useState(0);
   const [tgUserId, setTgUserId] = useState<string>("");
-  const { setUserPoints, currentUserId, setCurrentUserId } = useAppProvider();
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const { userPoints, setUserPoints, currentUserId, setCurrentUserId } = useAppProvider();
 
   const handleStart = () => {
     setGameState("playing");
@@ -37,7 +35,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId, dropFlag }) => {
     setGameState("playing");
     setScore(0);
     setReward(0);
-    setGamePoints(0);
+    setPoints(0);
     setBackgroundY(0);
   };
 
@@ -57,7 +55,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId, dropFlag }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: currentUserId,
+          userId: userId,
           score,
           level,
           points: points,
@@ -72,23 +70,10 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId, dropFlag }) => {
     }
   };
 
-  // const getPoints = async (currentUserId: string) => {
-  //   const result = await fetchPoints(currentUserId);
-  //   setUserPoints(result.points);
-  // }
-
-  const updatePoints = useCallback(async (points: number) => {
-    const newSocket = io();
-    setSocket(newSocket);
-    newSocket.emit("joinGame", currentUserId);
-    newSocket.on("updatePoints", (points: number) => {
-      setUserPoints(points);
-    });
-    newSocket.emit("updatePoints", { userId: currentUserId, points });
-    return () => {
-      newSocket.disconnect();
-    };
-  }, [currentUserId, setUserPoints]);
+  const getPoints = async (currentUserId: string) => {
+    const result = await fetchPoints(currentUserId);
+    setUserPoints(result.points);
+  }
 
   useEffect(() => {
     handleClick();
@@ -118,16 +103,14 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId, dropFlag }) => {
           setScore((prevScore) => prevScore + 1);
 
           if ((score + 1) % 10 === 0) {
-            saveScore(score, boosterLevel, 1000);
-            // setUserPoints((prevPoints) => prevPoints + 1000);
-            updatePoints(0);
-            setGamePoints((prevPoints) => prevPoints + 1000);
+            saveScore(score, boosterLevel, points + 1000);
+            getPoints(userId);
+            setPoints((prevPoints) => prevPoints + 1000);
             const baseReward = getBoosterReward(boosterLevel);
             const speedIncrease = calculateSpeedIncrease(
               baseReward,
               boosterLevel
             );
-            // getPoints(userId);
             setReward(speedIncrease);
           }
 
@@ -139,8 +122,8 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId, dropFlag }) => {
 
       if (block.state === "miss") {
         setGameState("gameover");
-        saveScore(score, boosterLevel, 0);
-        updatePoints(0);
+        saveScore(score, boosterLevel, points);
+        getPoints(userId);
       }
 
       const drawBackground = (context: CanvasRenderingContext2D) => {
@@ -198,7 +181,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId, dropFlag }) => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [block, tower, gameState, score, boosterLevel, gamePoints, backgroundY]);
+  }, [block, tower, gameState, score, boosterLevel, points, backgroundY]);
 
   return (
     <div className="relative w-full h-full">
@@ -237,7 +220,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId, dropFlag }) => {
         <div className="absolute top-0 left-0 p-4 font-thin text-red-900">
           <h5>Score: {score}</h5>
           <h5>Reward: {reward}</h5>
-          <h5>Points: {gamePoints}</h5>
+          <h5>Points: {points}</h5>
         </div>
       )}
     </div>

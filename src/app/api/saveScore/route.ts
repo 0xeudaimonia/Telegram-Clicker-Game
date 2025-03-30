@@ -1,56 +1,59 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { z } from "zod";
-import { io, Socket } from "socket.io-client";
+import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
 
-const scoreSchema = z.object({
-  userId: z.number().int(),
-  score: z.number().int().nonnegative(),
-  level: z.number().int().nonnegative(),
-  points: z.number().int().nonnegative(),
-});
+const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { userId, score, level, points } = scoreSchema.parse(body);
+    // console.log('Request body:', body);
+    const { userId, score, level, points } = body;
 
-    const result = await prisma.$transaction(async (tx) => {
-      const user = await tx.user.findUnique({ where: { id: userId } });
-      if (!user) throw new Error("User not found");
+    // console.log(userId, score, level, points);
 
-      const existingGame = await tx.game.findFirst({ where: { userId } });
+    if (!userId || !score || !level || !points) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
 
-      if (existingGame) {
-        return tx.game.update({
-          where: { id: existingGame.id },
-          data: {
-            score: existingGame.score + score,
-            points: existingGame.points + points,
-            level,
-          },
-        });
-      } else {
-        return tx.game.create({
-          data: { userId, score, level, points },
-        });
-      }
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Check if a game record for the user already exists
+    const existingGame = await prisma.game.findFirst({
+      where: { userId },
     });
 
-    const newSocket = io();
-    newSocket.emit("joinGame", userId);
-    newSocket.emit("updatePoints", { points });
-    newSocket.disconnect();
+    let result;
+    if (existingGame) {
+      // Update the existing record
+      result = await prisma.game.update({
+        where: { id: existingGame.id },
+        data: {
+          score: existingGame.score + score,
+          points: existingGame.points + points,
+          level,
+        },
+      });
+    } else {
+      result = await prisma.game.create({
+        data: {
+          userId: userId,
+          score: score,
+          level: level,
+          points: points,
+        },
+      });
+    }
 
     return NextResponse.json(result, { status: 200 });
-  } catch (error: unknown) {
-    console.log("Error saving or updating score:", error);
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    console.error('Error saving or updating score:', error);
+    if (error instanceof SyntaxError) {
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
     }
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
