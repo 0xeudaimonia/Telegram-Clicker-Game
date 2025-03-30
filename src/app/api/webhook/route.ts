@@ -5,10 +5,10 @@ import axios from 'axios';
 const prisma = new PrismaClient();
 
 const TELEGRAM_BOT_TOKEN = process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
-const CHANNEL_USERNAME = '@joinpgtestchannel';
-const CHANNEL_URL = `https://t.me/+L5Pbx0hlPRIzMjhl`;
+const CHANNEL_USERNAME = '@YOUR_CHANNEL_USERNAME';
+const CHANNEL_URL = `YOUR TELEGRAM CHANNEL URL TO CHECK THE SUBSCRIPTION`;
 
-const miniAppUrl = "https://ce25-2405-201-401b-c27c-4443-6c8d-adbd-92a3.ngrok-free.app";
+const miniAppUrl = "YOUR MINI APP URL";
 const keyboard = {
   inline_keyboard: [
     [
