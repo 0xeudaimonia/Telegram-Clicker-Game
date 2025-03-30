@@ -3,10 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "dev:socket": "NODE_OPTIONS='--loader ts-node/esm' nodemon --watch server.mts --exec ts-node --transpile-only server.mts",
+    "dev": "next dev -p 9000",
     "build": "next build",
-    "build:socket": "tsc -p tsconfig.server.json",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
@@ -19,7 +17,6 @@
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
     "clsx": "^2.1.1",
-    "framer-motion": "^11.14.3",
     "gsap": "^3.12.5",
     "next": "14.2.4",
     "node-fetch": "^3.3.2",
@@ -28,24 +25,19 @@
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
     "react-json-pretty": "^2.2.0",
-    "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
     "styled-components": "^6.1.12",
-    "three": "^0.166.1",
-    "zod": "^3.24.1"
+    "three": "^0.166.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@types/ws": "^8.5.13",
     "daisyui": "^4.12.8",
     "eslint": "^8",
     "eslint-config-next": "14.2.4",
     "postcss": "^8",
-    "prisma": "^5.17.0",
+    "prisma": "^6.1.0",
     "tailwindcss": "^3.4.1",
-    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
