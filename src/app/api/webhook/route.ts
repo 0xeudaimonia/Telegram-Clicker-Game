@@ -5,15 +5,15 @@ import axios from 'axios';
 const prisma = new PrismaClient();
 
 const TELEGRAM_BOT_TOKEN = process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
-const CHANNEL_USERNAME = '@YOUR_CHANNEL_USERNAME';
-const CHANNEL_URL = `YOUR TELEGRAM CHANNEL URL TO CHECK THE SUBSCRIPTION`;
+const CHANNEL_USERNAME = process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL_USERNAME;
+const CHANNEL_URL = process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL_URL;
 
-const miniAppUrl = "YOUR MINI APP URL";
+const miniAppUrl = process.env.NEXT_PUBLIC_TELEGRAM_MINI_APP_URL
 const keyboard = {
   inline_keyboard: [
     [
       {
-        text: "🎮 Launch Clicker Game",
+        text: "🎮 Launch Clicker Game", // Edit to provide a new title to the Launch app button
         web_app: { url: miniAppUrl },
       },
     ],
