@@ -38,10 +38,19 @@ To register a Telegram **Mini App**, follow these steps:
 2. Follow the instructions and enter your **Hosted Web App URL**.  
 3. Choose a **short name** for your app.  
 
-### **3. Create a Telegram Channel**  
-1. Create a new **Telegram Channel** (Private or Public).  
-2. Add your bot as an **administrator** in the channel.  
-3. Users must join this channel before launching the game.  
+### **3. Create a Telegram Group**  
+1. Create a new **Telegram Group** with more than 2 members.  
+2. Add your bot in the group and promote it to an **administrator**.
+3. Send a message in the group (any message).  
+4. Use the following API call to retrieve the latest updates:  
+
+   ```bash
+   https://api.telegram.org/botYOUR-BOT-TOKEN/getUpdates
+   ```
+
+5. Look for `"chat":{"id":-XXXXXXXXXX,...}` in the response.  
+6. The **negative ID (-XXXXXXXXXX)** is your **Group ID**, so save it for later.
+7. Users must join this group before launching the game.
 
 ## **Environment Variables (`.env` Setup)**  
 
@@ -54,8 +63,8 @@ POSTGRES_URL_NON_POOLING=YOUR_POSTGRES_DATABASE_URL
 NEXT_PUBLIC_TELEGRAM_BOT_TOKEN=YOUR_TELEGRAM_API_TOKEN
 NEXT_PUBLIC_TELEGRAM_BOT_LINK=YOUR_BOT_LINK
 
-NEXT_PUBLIC_TELEGRAM_CHANNEL_URL="YOUR_CHANNEL_URL"
-NEXT_PUBLIC_TELEGRAM_CHANNEL_USERNAME="@YOUR_CHANNEL_USERNAME"
+NEXT_PUBLIC_TELEGRAM_GROUP_URL="YOUR_GROUP_LINK"
+NEXT_PUBLIC_TELEGRAM_GROUP_ID="YOUR_GROUP_ID"
 
 NEXT_PUBLIC_TELEGRAM_MINI_APP_URL="YOUR_MINI_APP_URL"
 
