@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       if (!isSubscribed) {
         await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
           chat_id: telegramId,
-          text: `You must join our channel ${CHANNEL_USERNAME} to play the game. \nPlease join the channel: ${CHANNEL_URL}`,
+          text: `You must join our channel to play the game. \nPlease join the channel: ${CHANNEL_URL}`,
         });
         return NextResponse.json({ status: 'not_subscribed' });
       }
