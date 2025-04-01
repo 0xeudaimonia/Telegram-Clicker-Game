@@ -5,8 +5,8 @@ import axios from 'axios';
 const prisma = new PrismaClient();
 
 const TELEGRAM_BOT_TOKEN = process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN;
-const CHANNEL_USERNAME = process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL_USERNAME;
-const CHANNEL_URL = process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL_URL;
+const GROUP_ID = process.env.NEXT_PUBLIC_TELEGRAM_GROUP_ID;
+const GROUP_URL = process.env.NEXT_PUBLIC_TELEGRAM_GROUP_URL;
 
 const miniAppUrl = process.env.NEXT_PUBLIC_TELEGRAM_MINI_APP_URL
 const keyboard = {
@@ -24,7 +24,7 @@ async function isUserSubscribed(telegramId: string) {
   try {
     const response = await axios.get(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getChatMember`, {
       params: {
-        chat_id: CHANNEL_USERNAME,
+        chat_id: GROUP_ID,
         user_id: telegramId,
       },
     });
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
     // console.log("message", message);
 
-    if (message) {
+    if (message && message.from && !message.from.is_bot) {
       const telegramId = String(message.from.id);
       const username = `${message.from.first_name ? message.from.first_name : ''} ${message.from.last_name ? message.from.last_name : ''}` || message.from.username;
       const referralCode = `r_${telegramId}`;
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       if (!isSubscribed) {
         await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
           chat_id: telegramId,
-          text: `You must join our channel ${CHANNEL_USERNAME} to play the game. \nPlease join the channel: ${CHANNEL_URL}`,
+          text: `You must join our group to play the game. \nPlease join the group: ${GROUP_URL}`,
         });
         return NextResponse.json({ status: 'not_subscribed' });
       }
