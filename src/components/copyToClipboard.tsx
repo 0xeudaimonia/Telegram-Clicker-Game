@@ -10,7 +10,7 @@ const ReferralCode = ({ referralCode }: { referralCode: string }) => {
       setCopySupported(true);
     }
     if (referralCode) {
-      setShareLink(`${process.env.NEXT_PUBLIC_TELEGRAM_SHARE_LINK}${process.env.NEXT_PUBLIC_TELGRAM_BOT_LINK}?start=${referralCode}`);
+      setShareLink(`${process.env.NEXT_PUBLIC_TELEGRAM_SHARE_LINK}?${process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK}?start=${referralCode}`);
     } else {
       setShareLink("#");
     }
@@ -18,7 +18,7 @@ const ReferralCode = ({ referralCode }: { referralCode: string }) => {
 
   useEffect(() => {
     if (referralCode) {
-      setShareLink(`${process.env.NEXT_PUBLIC_TELEGRAM_SHARE_LINK}${process.env.NEXT_PUBLIC_TELGRAM_BOT_LINK}?start=${referralCode}`);
+      setShareLink(`${process.env.NEXT_PUBLIC_TELEGRAM_SHARE_LINK}?${process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK}?start=${referralCode}`);
     } else {
       setShareLink("#");
     }
@@ -27,7 +27,7 @@ const ReferralCode = ({ referralCode }: { referralCode: string }) => {
   const handleCopy = useCallback(() => {
     if (!copySupported) {
       const textArea = document.createElement("textarea");
-      textArea.value = `${process.env.NEXT_PUBLIC_TELGRAM_BOT_LINK}?start=${referralCode}`;
+      textArea.value = `${process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK}?start=${referralCode}`;
       document.body.appendChild(textArea);
       textArea.select();
       document.execCommand("copy");
@@ -35,26 +35,36 @@ const ReferralCode = ({ referralCode }: { referralCode: string }) => {
       console.log("Copied to clipboard");
     } else {
       navigator.clipboard
-        .writeText(`${process.env.NEXT_PUBLIC_TELGRAM_BOT_LINK}?start=${referralCode}`)
+        .writeText(`${process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK}?start=${referralCode}`)
         .then(() => {
-          console.log("Copied to clipboard");
+          console.log("Скопировано в буфер обмена");
         })
         .catch((err) => {
-          console.error("Failed to copy: ", err);
+          console.error("Не удалось скопировать: ", err);
         });
     }
   }, [copySupported, referralCode]);
 
+  const handleTelegramShare = () => {
+    const shareURL = `${process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK}?start=${referralCode}`;
+    const message = encodeURIComponent("Komm zu mir in diesen Telegram-Bot! " + shareURL);
+  
+    window.location.href = `https://t.me/share/url?url=${shareURL}&text=${message}`;
+  };
+
   return (
     <div className="flex justify-center text-center items-center gap-3 bottom-[5.5rem] fixed w-full px-4 right-0">
       <div className="card bg-[#FABB1E] p-3 border border-1 border-[#1F1F1F] rounded-lg bg-[url(/mainButton_Gold.png)] w-full">
-        <a href={shareLink} className="m-0 text-[#002050]">
-          <b>
-            {referralCode
-              ? `Пригласить друга`
-              : "Generating referral code..."}
-          </b>
-        </a>
+      <a
+        href="#"
+        className="m-0 text-[#002050]"
+        onClick={(e) => {
+          e.preventDefault();
+          handleTelegramShare(); // Use Web Share API
+        }}
+      >
+        <b>{referralCode ? `Пригласить друга` : "Generiere Empfehlungscode..."}</b>
+      </a>
       </div>
       <button
         className="btn bg-[url(/bgButton.png)] bg-no-repeat bg-cover btn-primary"

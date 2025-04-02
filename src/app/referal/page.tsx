@@ -86,17 +86,17 @@ export default function ReferalPage() {
               const referralData = await referralResponse.json();
               setReferralUsers(referralData.refUsers || []);
             } else {
-              console.error(
-                "Error fetching referral users:",
+                console.error(
+                "Ошибка при получении реферальных пользователей:",
                 referralResponse.statusText
-              );
+                );
             }
           } else {
             const errorData = await response.json();
-            console.error("Error fetching user name:", errorData.error);
+            console.error("Ошибка при получении имени пользователя:", errorData.error);
           }
         } catch (error) {
-          console.error("Error fetching user name:", error);
+            console.error("Ошибка при получении имени пользователя:", error);
         }
       } else {
         console.warn("User ID is not set.");

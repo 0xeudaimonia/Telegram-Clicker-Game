@@ -18,9 +18,9 @@ export default async function saveScore(req: NextApiRequest, res: NextApiRespons
 
       res.status(200).json(newScore);
     } catch (error) {
-      res.status(500).json({ error: 'Error saving score' });
+      res.status(500).json({ error: 'Ошибка сохранения результата' });
     }
   } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ error: 'Метод не разрешен' });
   }
 }
