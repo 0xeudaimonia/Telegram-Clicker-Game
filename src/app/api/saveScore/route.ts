@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
     // console.log('Request body:', body);
     const { userId, score, level, points } = body;
 
-    // console.log(userId, score, level, points);
+    console.log(userId, score, level, points);
 
     if (!userId || !score || !level || !points) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
