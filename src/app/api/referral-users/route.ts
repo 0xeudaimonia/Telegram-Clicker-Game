@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get('userId');
 
   if (!userId) {
-    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    return NextResponse.json({ error: 'Требуется идентификатор пользователя' }, { status: 400 });
   }
 
   try {
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ refUsers });
   } catch (error) {
-    console.error('Error fetching referral users:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('Ошибка при получении реферальных пользователей:', error);
+    return NextResponse.json({ error: 'Внутренняя ошибка сервера' }, { status: 500 });
   }
 }

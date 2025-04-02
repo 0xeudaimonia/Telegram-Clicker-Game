@@ -19,9 +19,9 @@ export default function TendersPage() {
   const renderBottomData = () => {
     switch (activeBlock) {
       case "Build":
-        return <div>Build Data</div>;
+        <div>Данные по строительству</div>;
       case "Finance":
-        return <div>Finance Data</div>;
+        <div>Данные по финансам</div>;
       case "Marketing":
         return <Marketing />;
       default:

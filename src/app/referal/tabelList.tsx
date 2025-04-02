@@ -14,9 +14,9 @@ export const TabelList: React.FC<TabelListProps> = ({ data }) => {
   return (
     <div className="text-white">
       <div className="grid grid-cols-3 justify-center">
-        <p className="text-[10px] m-0 text-center">Level</p>
-        <p className="text-[10px] m-0">For friend</p>
-        <p className="text-[10px] m-0">Premium</p>
+        <p className="text-[10px] m-0 text-center">Уровень</p>
+        <p className="text-[10px] m-0">Для друга</p>
+        <p className="text-[10px] m-0">Премиум</p>
       </div>
       {
         data.map((item, index) => (

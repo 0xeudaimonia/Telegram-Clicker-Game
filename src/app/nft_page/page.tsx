@@ -31,12 +31,12 @@ const Page = () => {
         />
 
         <div className="flex justify-between items-center mt-3">
-          <p className="font-bold">Cost per unit</p>
+          <p className="font-bold">Стоимость за единицу</p>
           <p className="font-bold">{costPerUnit} TON</p>
         </div>
         <hr className="border-[#1F1F1F]" />
         <div className="flex justify-between items-center my-3">
-          <p className="font-bold m-0">Select quantity</p>
+          <p className="font-bold m-0">Выберите количество</p>
           <div className="flex gap-2 items-center border border-1 border-[#2496FF] rounded-full px-3">
             <button onClick={incrementQuantity}>+</button>
             <p className="font-bold m-0">{quantity}</p>
@@ -45,13 +45,13 @@ const Page = () => {
         </div>
         <hr className="border-[#1F1F1F]" />
         <div className="flex justify-between items-center mt-3">
-          <p className="font-bold">Total amount</p>
+          <p className="font-bold">Общая сумма</p>
           <p className="font-bold">{totalAmount} TON</p>
         </div>
 
         <Button
           className="btn bg-[url(/bgButton.png)] bg-no-repeat bg-cover btn-primary w-full"
-          label="Buy NFT"
+          label="Kaufe NFT"
         />
       </div>
     </>

@@ -10,28 +10,28 @@ interface DataType {
 const data: DataType[] = [
   {
     image: "/greenblock.png",
-    title: "Name",
+    title: "Имя",
     level: "12",
     amount: "513 000",
     exchange: "513 000",
   },
   {
     image: "/greenblock.png",
-    title: "Name",
+    title: "Имя",
     level: "12",
     amount: "513 000",
     exchange: "513 000",
   },
   {
     image: "/greenblock.png",
-    title: "Name",
+    title: "Имя",
     level: "12",
     amount: "513 000",
     exchange: "513 000",
   },
   {
     image: "/greenblock.png",
-    title: "Name",
+    title: "Имя",
     level: "12",
     amount: "513 000",
     exchange: "513 000",
@@ -60,7 +60,7 @@ const RWA: React.FC = () => {
               </h6>
 
               <span className="text-xs" style={{ flexBasis: "50%" }}>
-                Exchange
+                Обмен
               </span>
               <div className="flex ">
                 <Image
@@ -76,7 +76,7 @@ const RWA: React.FC = () => {
           </div>
           <hr />
           <div className="flex">
-            <span className="text-xs pt-2">Level {item.level}</span>
+            <span className="text-xs pt-2">lvl {item.level}</span>
             <span className="h-4 p-0">|</span>
             <div className="flex mx-1">
               <Image

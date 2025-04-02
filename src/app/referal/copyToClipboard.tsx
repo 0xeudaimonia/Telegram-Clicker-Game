@@ -7,10 +7,10 @@ const CopyToClipboard = () => {
     navigator.clipboard
       .writeText("Пригласить друга")
       .then(() => {
-        console.log("Copied to clipboard");
+        console.log("Скопировано в буфер обмена");
       })
       .catch((err) => {
-        console.error("Failed to copy: ", err);
+        console.error("Не удалось скопировать: ", err);
       });
   }, []);
 

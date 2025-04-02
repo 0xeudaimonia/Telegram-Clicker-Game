@@ -13,7 +13,7 @@ const keyboard = {
   inline_keyboard: [
     [
       {
-        text: "🎮 Launch Clicker Game", // Edit to provide a new title to the Launch app button
+        text: "🎮 Запустить игру Clicker", // Изменено для предоставления нового заголовка кнопки запуска приложения
         web_app: { url: miniAppUrl },
       },
     ],
@@ -32,7 +32,7 @@ async function isUserSubscribed(telegramId: string) {
     const status = response.data.result?.status;
     return ['member', 'administrator', 'creator'].includes(status);
   } catch (error) {
-    console.error('Error checking subscription:', error);
+    console.error('Ошибка проверки подписки:', error);
     return false; // Assume not subscribed on error
   }
 }
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       if (!isSubscribed) {
         await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
           chat_id: telegramId,
-          text: `You must join our group to play the game. \nPlease join the group: ${GROUP_URL}`,
+          text: `Вы должны присоединиться к нашей группе, чтобы играть в игру. \nПожалуйста, присоединяйтесь к группе: ${GROUP_URL}`,
         });
         return NextResponse.json({ status: 'not_subscribed' });
       }
@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
         // Send a welcome message
         await axios.post(`https://api.telegram.org/bot${process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN}/sendMessage`, {
           chat_id: telegramId,
-          text: 'Welcome to our service! Your account has been created.',
+          text: 'Добро пожаловать в наш сервис! Ваш аккаунт был создан.',
           reply_markup: keyboard,
         });
       } else {
@@ -184,7 +184,7 @@ export async function POST(req: NextRequest) {
         // Send a message if user already exists
         await axios.post(`https://api.telegram.org/bot${process.env.NEXT_PUBLIC_TELEGRAM_BOT_TOKEN}/sendMessage`, {
           chat_id: telegramId,
-          text: 'You are already registered.',
+          text: 'Вы уже зарегистрированы.',
           reply_markup: keyboard,
         });
       }
@@ -192,7 +192,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ status: 'ok' });
   } catch (error) {
-    console.error('Error handling webhook:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('Ошибка обработки вебхука:', error);
+    return NextResponse.json({ error: 'Внутренняя ошибка сервера' }, { status: 500 });
   }
 }

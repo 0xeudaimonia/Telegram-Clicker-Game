@@ -35,10 +35,10 @@ export default function Card() {
           // setTgUserId(data.userId || "Guest");
         } else {
           const errorData = await response.json();
-          console.error("Error fetching user name:", errorData.error);
+            console.error("Ошибка при получении имени пользователя:", errorData.error);
         }
       } catch (error) {
-        console.error("Error fetching user name:", error);
+        console.error("Ошибка при получении имени пользователя:", error);
       }
     };
 

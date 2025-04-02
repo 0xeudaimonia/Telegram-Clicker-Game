@@ -9,12 +9,12 @@ const AdminLayout: React.FC = ({ children }: React.PropsWithChildren<{}>) => {
           <ul>
             <li>
               <Link href="/admin/dashboard">
-                <a>Dashboard</a>
+                <a>Панель управления</a>
               </Link>
             </li>
             <li>
               <Link href="/admin/users">
-                <a>Users</a>
+                <a>Пользователи</a>
               </Link>
             </li>
             {/* Add more links as needed */}
