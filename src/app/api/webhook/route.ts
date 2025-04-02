@@ -96,14 +96,11 @@ export async function POST(req: NextRequest) {
 
 
         if (referrer) {
-          console.log("referrer", referrer);
           const bonus_type = await prisma.bonusType.findFirst({
             where: {
               title: "invite_friend",
             }
           });
-
-          console.log("bonus_type", bonus_type);
 
           let invite_record;
 
@@ -116,13 +113,9 @@ export async function POST(req: NextRequest) {
 
             let invite_points = invite_record?.points ? invite_record?.points : 0;
 
-            console.log("invite_points", invite_points);
-
             const referrrerScore = await prisma.game.findFirst({
               where: { userId: referrer.id }
             });
-
-            console.log("referrrerScore", referrrerScore);
 
             // console.log("referrrerScore", referrrerScore);
             let result;
