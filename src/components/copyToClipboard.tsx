@@ -47,7 +47,7 @@ const ReferralCode = ({ referralCode }: { referralCode: string }) => {
 
   const handleTelegramShare = () => {
     const shareURL = `${process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK}?start=${referralCode}`;
-    const message = encodeURIComponent("Komm zu mir in diesen Telegram-Bot! " + shareURL);
+    const message = encodeURIComponent("Присоединяйся ко мне в этом телеграм-боте! " + shareURL);
   
     window.location.href = `https://t.me/share/url?url=${shareURL}&text=${message}`;
   };
@@ -63,7 +63,7 @@ const ReferralCode = ({ referralCode }: { referralCode: string }) => {
           handleTelegramShare(); // Use Web Share API
         }}
       >
-        <b>{referralCode ? `Пригласить друга` : "Generiere Empfehlungscode..."}</b>
+        <b>{referralCode ? `Пригласить друга` : "Генерация реферального кода..."}</b>
       </a>
       </div>
       <button
