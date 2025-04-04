@@ -10,7 +10,7 @@ import RWA from "@app/tenders/rwa";
 import Marketing from "@app/tenders/marketing";
 import { useAppProvider } from "@components/layouts/AppProvider";
 
-const blocks: string[] = ["RWA", "Build", "Finance", "Marketing"];
+const blocks: string[] = ["RWA", "Построить", "Финансы", "Маркетинг"];
 
 export default function TendersPage() {
   const [activeBlock, setActiveBlock] = useState<string>("RWA");
@@ -18,11 +18,11 @@ export default function TendersPage() {
 
   const renderBottomData = () => {
     switch (activeBlock) {
-      case "Build":
+      case "Построить":
         <div>Данные по строительству</div>;
-      case "Finance":
+      case "Финансы":
         <div>Данные по финансам</div>;
-      case "Marketing":
+      case "Маркетинг":
         return <Marketing />;
       default:
         return <RWA />;
