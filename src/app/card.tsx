@@ -87,7 +87,7 @@ export default function Card() {
         </div>
         <div>
           <Button
-            label="Сбросить блок"
+            label="Drop Block"
             className="btn text-base bg-[url(/bgButton.png)] bg-cover bg-center bg-no-repeat btn-primary text-white"
             onClick={() => { setDropFlag((perviousDropFlag) => -perviousDropFlag) }}
           />

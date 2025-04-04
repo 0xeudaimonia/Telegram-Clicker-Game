@@ -4,52 +4,52 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Carousel from "../../components/Carousel";
 import Cardlist from "../../components/CardList";
-const tabs = ["Соло", "Альянс"];
+const tabs = ["Solo", "Alliances"];
 
 const carouselData = [
   {
-    title: "Подсобник • 1lvl",
-    description: "50% лучших застройщиков",
+    title: "Brick Agent • 1lvl",
+    description: "50% Best RE developers",
     imageSrc: "/lvlIcons_1.svg",
   },
   {
-    title: "Подсобник • 2lvl",
-    description: "50% лучших застройщиков",
+    title: "Zone Warden • 2lvl",
+    description: "50% Best RE developers",
     imageSrc: "/lvlIcons_2.svg",
   },
   {
-    title: "Подсобник • 3lvl",
-    description: "50% лучших застройщиков",
+    title: "Estate Chief • 3lvl",
+    description: "50% Best RE developers",
     imageSrc: "/lvlIcons_3.svg",
   },
   {
-    title: "Подсобник • 4lvl",
-    description: "50% лучших застройщиков",
+    title: "Eco-Developer • 4lvl",
+    description: "50% Best RE developers",
     imageSrc: "/lvlIcons_4.svg",
   },
   {
-    title: "Подсобник • 5lvl",
-    description: "50% лучших застройщиков",
+    title: "Tower Forger • 5lvl",
+    description: "50% Best RE developers",
     imageSrc: "/lvlIcons_5.svg",
   },
   {
-    title: "Подсобник • 6lvl",
-    description: "50% лучших застройщиков",
+    title: "Smart Urbanist • 6lvl",
+    description: "50% Best RE developers",
     imageSrc: "/lvlIcons_6.svg",
   },
   {
-    title: "Подсобник • 7lvl",
-    description: "50% лучших застройщиков",
+    title: "Chain Core • 7lvl",
+    description: "50% Best RE developers",
     imageSrc: "/lvlIcons_7.svg",
   },
   {
-    title: "Подсобник • 8lvl",
-    description: "50% лучших застройщиков",
+    title: "Protocol Baron • 8lvl",
+    description: "50% Best RE developers",
     imageSrc: "/lvlIcons_8.svg",
   },
   {
-    title: "Подсобник • 9lvl",
-    description: "50% лучших застройщиков",
+    title: "Legacy Founder • 9lvl",
+    description: "50% Best RE developers",
     imageSrc: "/lvlIcons_9.svg",
   },
 ];
@@ -112,7 +112,7 @@ export default function Card() {
     <div className="mb-10">
       <div className="flex justify-center items-center gap-2 mb-9">
         <p className="m-0">
-          <b>Ассоциации застройщиков</b>
+          <b>Builders Associations</b>
         </p>
         <Image src="/refresh.svg" alt="refresh" width={16} height={16} />
       </div>

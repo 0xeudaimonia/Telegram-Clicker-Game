@@ -200,7 +200,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId, dropFlag }) => {
               onClick={handleStart}
               className="px-6 py-3 bg-blue-500 rounded-md text-2xl hover:bg-blue-700"
             >
-              Начать игру
+              Start Game
             </button>
           </div>
         </div>
@@ -211,15 +211,15 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ userId, dropFlag }) => {
           <button
             onClick={handleRestart}
             className="px-6 py-3 bg-blue-500 rounded-md text-2xl hover:bg-blue-700"
-            >Перезапустить
+            >Restart
           </button>
         </div>
       )}
       {gameState === "playing" && (
         <div className="absolute top-0 left-0 p-4 font-thin text-red-900">
-            <h5>Счёт: {score}</h5>
-            <h5>Награда: {reward}</h5>
-            <h5>Очки: {points}</h5>
+            <h5>Score: {score}</h5>
+            <h5>Reward: {reward}</h5>
+            <h5>Points: {points}</h5>
         </div>
       )}
     </div>
