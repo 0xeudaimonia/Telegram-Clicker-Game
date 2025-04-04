@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const text = ["build", "score list", "referal", "tenders", "nft page"];
+const text = ["build", "score list", "referral", "tenders", "nft page"];
 
 const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
   const pathname = usePathname();
