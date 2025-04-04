@@ -51,7 +51,7 @@ const Page = () => {
 
         <Button
           className="btn bg-[url(/bgButton.png)] bg-no-repeat bg-cover btn-primary w-full"
-          label="Kaufe NFT"
+          label="Купить NFT"
         />
       </div>
     </>
